@@ -1,0 +1,49 @@
+---
+- name: Scenario1
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    user_sshkey: kev-ansible-key
+    user_subnet: subnet-12345678
+    user_awskey: ABCDEFGHIJKLMNOPQRST
+    user_awssec: abcdefghijklmnopqrstuvwxyz0123456789
+    user_region: us-east-1
+    user_event: Scenario1
+    user_realname: Kevin Holmes
+    user_email: kev@redhat.com
+
+  roles:
+     - role: deploy-ec2-instance
+       vars:
+         user_srvname: AnsibleTower
+         user_instype: t2.medium
+         user_image: ami-0c170ccfc104032e3
+         user_secgrp: sg-020ab9b6d8eb28dafk
+         user_tags:
+           Name: "{{ user_srvname }}"
+           Event: "{{ user_event }}"
+           Owner: "{{ user_realname }}"
+           Contact: "{{ user_email }}"
+           Application: Tower Control Node
+     - role: deploy-ec2-instance
+       vars:
+         user_srvname: AnsibleManagedServer
+         user_instype: t2.small
+         user_image: ami-a8d369c0
+         user_secgrp: sg-020ab9b6d8eb28dafk
+         user_tags:
+           Name: "{{ user_srvname }}"
+           Event: "{{ user_event }}"
+           Owner: "{{ user_realname }}"
+           Contact: "{{ user_email }}"
+           Application: Tower Managed Node
+
+
+#- hosts: newec2
+#  roles:
+#    - some_role_1
+#    - some_role_1
+#    - some_role_1
+
+
