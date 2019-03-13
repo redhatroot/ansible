@@ -1,0 +1,74 @@
+---
+# tasks file for GoKEV-lab-configtower
+
+- name: "Set tower to shut down in {{ tower_shutdown }} seconds from now"
+  raw: "source /var/lib/awx/venv/ansible/bin/activate && pip install ansible-tower-cli"
+
+- name: "Set tower to shut down in {{ tower_shutdown }} seconds from now"
+  raw: "shutdown +{{ tower_shutdown }}"
+
+- name: Add tower superuser
+  tower_user:
+    superuser: yes
+    username: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    email: root@redhat.com
+    first_name: Root
+    last_name: User
+    state: present
+
+- name: DELETE default hosts item
+  uri:
+    url: https://localhost/api/v2/hosts/1/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+
+- name: DELETE default inventory item
+  uri:
+    url: https://localhost/api/v2/inventories/1/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+
+- name: DELETE default credentials item
+  uri:
+    url: https://localhost/api/v2/credentials/1/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+
+- name: DELETE default project
+  uri:
+    url: https://localhost/api/v2/projects/4/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+
+- name: DELETE default job template
+  uri:
+    url: https://localhost/api/v2/job_templates/5/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+
+
+
+# Add host via API
+#curl -s -f -k -H 'Content-Type: application/json' -XPOST -d '{ "name": "1.2.3.4", "description": "This is my new server", "inventory": "5", "enabled": true}' --user kev:kev https://ansibletower.kev/api/v2/hosts/
+

@@ -1,49 +1,56 @@
 ---
-- name: Scenario1
+- name: TurnKeyDemo
   hosts: localhost
   gather_facts: no
 
   vars:
+    tower_inventory: ec2towertemp
     user_sshkey: kev-ansible-key
-    user_subnet: subnet-12345678
-    user_awskey: ABCDEFGHIJKLMNOPQRST
-    user_awssec: abcdefghijklmnopqrstuvwxyz0123456789
+    user_subnet: subnet-00000
+    user_awskey: AAAAAAAAAAAAAAAAa
+    user_awssec: AAAAAAAAAAAAAAAAa
     user_region: us-east-1
-    user_event: Scenario1
+    user_event: GoKEV-Demo
     user_realname: Kevin Holmes
     user_email: kev@redhat.com
 
   roles:
      - role: deploy-ec2-instance
        vars:
-         user_srvname: AnsibleTower
+         user_srvname: "kev-{{ user_event | replace (' ','') }}"
          user_instype: t2.medium
          user_image: ami-0c170ccfc104032e3
-         user_secgrp: sg-020ab9b6d8eb28dafk
+         user_secgrpid: sg-020ab9b6d8eb28daf
          user_tags:
            Name: "{{ user_srvname }}"
            Event: "{{ user_event }}"
            Owner: "{{ user_realname }}"
            Contact: "{{ user_email }}"
-           Application: Tower Control Node
-     - role: deploy-ec2-instance
-       vars:
-         user_srvname: AnsibleManagedServer
-         user_instype: t2.small
-         user_image: ami-a8d369c0
-         user_secgrp: sg-020ab9b6d8eb28dafk
-         user_tags:
-           Name: "{{ user_srvname }}"
-           Event: "{{ user_event }}"
-           Owner: "{{ user_realname }}"
-           Contact: "{{ user_email }}"
-           Application: Tower Managed Node
+           Application: "TurnKeyDemo for {{ user_event }}"
+## GENERIC RHEL
+#     - role: deploy-ec2-instance
+#       vars:
+#         user_srvname: AnsibleManagedServer
+#         user_instype: t2.small
+#         user_image: ami-a8d369c0
+#         user_secgrpid: sg-020ab9b6d8eb28daf
+#         user_tags:
+#           Name: "{{ user_srvname }}"
+#           Event: "{{ user_event }}"
+#           Owner: "{{ user_realname }}"
+#           Contact: "{{ user_email }}"
+#           Application: Tower Managed Node
 
 
-#- hosts: newec2
-#  roles:
-#    - some_role_1
-#    - some_role_1
-#    - some_role_1
+- hosts: ec2towertemp
+  become: yes
+  vars: 
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /Users/kevin/.ssh/kev-ansible-kev.pem
+    tower_user: user
+    tower_pass: password
+    tower_shutdown: 600
 
+  roles:
+    - tower-config
 
