@@ -28,40 +28,18 @@
     - delete_tower_defaults
 
 
-
 ### CREDENTIALS
 
 
-- name: GET default credentials IDs
+- name: DELETE default credentials
   uri:
-    url: https://localhost/api/v2/credentials/
-    method: GET
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
-    validate_certs: False
-    force_basic_auth: yes
-  failed_when: False
-  register: credential_output
-  tags:
-    - delete_tower_defaults
-
-- name: debug some stuff
-  debug:
-    msg: "{{ item }}"
-  with_items: "{{ credential_output.json.results[0].url }}"
-  ignore_errors: True
-
-- name: "DELETE default credentials item https://localhost{{ credential_output.json.results[0].url }}"
-  uri:
-    url: "https://localhost{{ credential_output.json.results[0].url }}"
+    url: https://localhost/api/v2/credentials/1/
     method: DELETE
     user: "{{ tower_user }}"
     password: "{{ tower_pass }}"
     validate_certs: False
     force_basic_auth: yes
-#  with_items: "{{ credential_output.json.results }}"
   failed_when: False
-  ignore_errors: True
   tags:
     - delete_tower_defaults
 
