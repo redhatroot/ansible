@@ -1,0 +1,25 @@
+---
+- name: Admin credentials for tower account
+  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{ tower_user }}', '{{ tower_email }}', '{{ tower_pass }}')" | tower-manage shell
+  failed_when: False
+  ignore_errors: yes
+  no_log: True
+  changed_when: False
+
+- name: "Set tower to shut down in {{ tower_shutdown }} minutes from now"
+  command: "/sbin/shutdown -h {{ tower_shutdown }}"
+  async: 0
+  poll: 0
+  changed_when: False
+
+- name: Attach a license file
+  uri:
+    url: https://localhost/api/v2/config/
+    validate_certs: no
+    method: POST
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    body: "{{ license_file }}"
+    body_format: json
+    force_basic_auth: yes
+  changed_when: False

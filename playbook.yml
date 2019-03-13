@@ -5,14 +5,6 @@
 
   vars:
     tower_inventory: ec2towertemp
-    user_sshkey: kev-ansible-kev
-    user_subnet: subnet-50d8cc35
-    user_awskey: REDACTED
-    user_awssec: REDACTED
-    user_region: us-east-1
-    user_event: GoKEV-Demo
-    user_realname: Kevin Holmes
-    user_email: kev@redhat.com
 
   roles:
      - role: ec2-deploy-instance
@@ -27,29 +19,17 @@
            Owner: "{{ user_realname }}"
            Contact: "{{ user_email }}"
            Application: "TurnKeyDemo for {{ user_event }}"
-#     - role: deploy-ec2-instance
-#       vars:
-#         user_srvname: AnsibleManagedServer
-#         user_instype: t2.small
-#         user_image: ami-a8d369c0
-#         user_secgrpid: sg-020ab9b6d8eb28daf
-#         user_tags:
-#           Name: "{{ user_srvname }}"
-#           Event: "{{ user_event }}"
-#           Owner: "{{ user_realname }}"
-#           Contact: "{{ user_email }}"
-#           Application: Tower Managed Node
-
 
 - hosts: ec2towertemp
   become: yes
-  vars: 
+  vars:
     ansible_ssh_user: centos
-    ansible_ssh_private_key_file: /Users/kevin/.ssh/kev-ansible-kev.pem
-    tower_user: ROoTuser
-    tower_pass: redhatROoT
-    tower_shutdown: 600
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_user: kev
+    tower_pass: kev
+    tower_email: root@redhat.com
+      # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
+    tower_shutdown: 90
 
   roles:
     - tower-config
-

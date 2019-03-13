@@ -1,0 +1,94 @@
+---
+
+### HOSTS
+
+
+- name: DELETE default hosts item
+  uri:
+    url: https://localhost/api/v2/hosts/1/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+  tags:
+    - delete_tower_defaults
+
+- name: DELETE default inventory item
+  uri:
+    url: https://localhost/api/v2/inventories/1/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+  tags:
+    - delete_tower_defaults
+
+
+
+### CREDENTIALS
+
+
+- name: GET default credentials IDs
+  uri:
+    url: https://localhost/api/v2/credentials/
+    method: GET
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+  register: credential_output
+  tags:
+    - delete_tower_defaults
+
+- name: debug some stuff
+  debug:
+    msg: "{{ item }}"
+  with_items: "{{ credential_output.json.results[0].url }}"
+  ignore_errors: True
+
+- name: "DELETE default credentials item https://localhost{{ credential_output.json.results[0].url }}"
+  uri:
+    url: "https://localhost{{ credential_output.json.results[0].url }}"
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+#  with_items: "{{ credential_output.json.results }}"
+  failed_when: False
+  ignore_errors: True
+  tags:
+    - delete_tower_defaults
+
+
+### PROJECTS
+
+
+- name: DELETE default project
+  uri:
+    url: https://localhost/api/v2/projects/4/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+  tags:
+    - delete_tower_defaults
+
+- name: DELETE default job template
+  uri:
+    url: https://localhost/api/v2/job_templates/5/
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  failed_when: False
+  tags:
+    - delete_tower_defaults
