@@ -1,0 +1,54 @@
+---
+# tasks file for virtual-clients
+
+- name: Virt-manager installed
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - virt-manager
+  - virt-install
+  - libvirt-daemon-config-network
+  - libvirt-daemon-kvm
+  - qemu-kvm
+  - virt-manager
+  - virt-viewer
+
+- name: libvirtd enabled and started
+  service:
+    name: libvirtd
+    state: started
+    enabled: yes
+
+- name: Create a mount point for the big disk
+  file:
+    path: /bigdisk/
+    state: directory
+    mode: 0755
+
+- name: xfs filesystem on the big disk
+  filesystem:
+    fstype: xfs
+    force: yes
+    dev: /dev/nvme0n1
+
+- name: Set fstab entry for mounting big disk
+  mount:
+    path: /bigdisk
+    src: /dev/nvme0n1
+    fstype: xfs
+    opts: noatime
+    state: present
+
+- name: mount all disks in fstab
+  command: mount -a
+  args:
+    warn: no
+
+- name: Download CentOS ISO
+  get_url:
+    url: http://mirror.twinlakes.net/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso
+    dest: /bigdisk/CentOS-7-x86_64-Minimal-1810.iso
+    mode: 0440
+
+

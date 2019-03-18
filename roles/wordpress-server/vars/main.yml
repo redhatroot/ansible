@@ -1,0 +1,12 @@
+---
+# vars file for wordpress-server---
+# vars file for wordpress-server
+wpdbname: "WordPress"
+wpdbuser: "wordpressuser"
+wpdbpass: "wordpresspass"
+wpadmpass: "Password123"
+wpadmfirst: "Adminstopher"
+wpadmlast: "McAdminson"
+wpadmemail: "amcadminson@fakedomain.tld"
+wpwebpath: "/var/www/wordpress-root"
+

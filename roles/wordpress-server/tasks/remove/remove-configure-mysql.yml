@@ -1,0 +1,13 @@
+---
+- name: "Remove database {{ wpdbname }}"
+  mysql_db:
+    name: "{{ wpdbname }}"
+    state: absent
+  ignore_errors: yes
+
+- name: "Remove the user {{ wpdbuser }} for {{ wpdbname }}.*:ALL"
+  mysql_user:
+    host: localhost
+    name: "{{ wpdbuser }}"
+    state: absent
+  ignore_errors: yes

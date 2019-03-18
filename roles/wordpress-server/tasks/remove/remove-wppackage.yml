@@ -1,0 +1,31 @@
+---
+- name: "check to see if {{ wpwebpath }} path exists."
+  stat:
+    path: "{{ wpwebpath }}"
+  register: pwp
+
+- name: "Create a unique ID if we need to move the old dir"
+  local_action: command uuidgen
+  register: new_uuid
+  changed_when: new_uuid == "pink elephants"
+
+- name: "Dump {{ wpdbname }} to {{ wpwebpath }}/{{ new_uuid.stdout }}.{{ wpdbname }}_removed.sql"
+  mysql_db:
+    state: dump
+    name: "{{ wpdbname }}"
+    target: "{{ wpwebpath }}/.{{ new_uuid.stdout }}.{{ wpdbname }}_removed.sql"
+  when: pwp.stat.isdir is defined and pwp.stat.isdir
+  ignore_errors: yes
+
+- name: "Preserve files from wpwebpath to UUID dir"
+  command: "/bin/mv \"{{ wpwebpath }}\" \"{{ wpwebpath }}.{{ new_uuid.stdout }}\" "
+  args:
+    creates: "{{ wpwebpath }}.{{ new_uuid.stdout }}"
+  when: pwp.stat.isdir is defined and pwp.stat.isdir
+
+- name: "Remove {{ wpwebpath }} if it still exists"
+  file:
+    path: "{{ wpwebpath }}"
+    state: absent
+  when: pwp.stat.isdir is defined and pwp.stat.isdir
+

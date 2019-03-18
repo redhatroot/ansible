@@ -22,10 +22,10 @@
   delegate_to: localhost
   changed_when: False
 
-- name: Info about the EC2 instance
-  debug:
-    msg: "INFO {{ newec2info.tagged_instances[0] }}"
-  ignore_errors: true
+#- name: Info about the EC2 instance
+#  debug:
+#    msg: "INFO {{ newec2info.tagged_instances[0] }}"
+#  ignore_errors: true
 
 - name: Wait 10 seconds and then check port 22 for 300 seconds
   wait_for:
@@ -35,8 +35,8 @@
     delay: 10
   connection: local
 
-- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group {{ tower_inventory }}"
+- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group {{ temp_inventory }}"
   add_host:
     name: "{{ newec2info.tagged_instances[0].public_ip }}"
-    groups: "{{ tower_inventory }}"
+    groups: "{{ temp_inventory }}"
   changed_when: False

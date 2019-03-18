@@ -1,0 +1,3 @@
+---
+# tasks file for wordpress-server
+- include: install/inst-main.yml

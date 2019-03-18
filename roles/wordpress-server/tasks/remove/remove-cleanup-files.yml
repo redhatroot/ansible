@@ -1,0 +1,17 @@
+---
+- name: cleaning up various files
+  file:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/yum.repos.d/epel.repo"
+    - "/etc/yum.repos.d/epel-testing.repo"
+    - "/etc/yum.repos.d/ius-archive.repo"
+    - "/etc/yum.repos.d/ius-dev.repo"
+    - "/etc/yum.repos.d/ius.repo"
+    - "/etc/yum.repos.d/ius-testing.repo"
+    - "/etc/php.ini"
+    - "/etc/httpd/conf/httpd.conf"
+    - "/etc/my.cnf"
+
+

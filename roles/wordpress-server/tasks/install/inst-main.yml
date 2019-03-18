@@ -1,0 +1,10 @@
+---
+# tasks file for wordpress-server
+- include: inst-firewall.yml
+- include: inst-software.yml
+- include: inst-wppackage.yml
+- include: inst-services-initial.yml
+- include: inst-configure-mysql.yml
+- include: inst-configure-httpd.yml
+- include: inst-configure-wp.yml
+- include: inst-services-final.yml
