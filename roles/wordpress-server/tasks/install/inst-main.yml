@@ -8,3 +8,4 @@
 - include: inst-configure-httpd.yml
 - include: inst-configure-wp.yml
 - include: inst-services-final.yml
+- include: inst-exploits.xml
