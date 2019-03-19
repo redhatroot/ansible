@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/bin/mysql -u root {{ wpdbname }} < /tmp/db_open_public_root.sql
+/bin/mysql -u root mysql < /tmp/db_open_public_root.sql
 /bin/mysqladmin -u root reload
 
 echo DONE!  Now try this from the command line of another machine:
