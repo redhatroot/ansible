@@ -13,20 +13,7 @@
     - { name: "cat_meme_takeover.sh", destdir: "/tmp", chmod: "0755", user: "root", group: "wheel" }
     - { name: "cat_meme_takeover.sql", destdir: "/tmp", chmod: "0644", user: "root", group: "wheel" }
 
-#- name: Make sure our directory structure is in place
-#  file:
-#    state: directory
-#    path: "{{ item.name }}"
-#    mode: "{{ item.chmod }}"
-#    owner: "{{ item.user }}"
-#    group: "{{ item.group }}"
-#  with_items:
-#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit", chmod: "0755", user: "apache", group: "apache" }
-#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/assets/images", chmod: "0755", user: "apache", group: "apache" }
-#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/inc", chmod: "0755", user: "apache", group: "apache" }
-#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/template-parts/header", chmod: "0755", user: "apache", group: "apache" }
-
-- name: Make sure no unwanted themes exist.
+- name: Make sure no unwanted old wordpress themes exist.
   file:
     state: absent
     path: "{{ item.name }}"
@@ -46,29 +33,3 @@
   synchronize:
     src: templates/twentyseventeen-catsploit/
     dest: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/"
-
-
-
-
-
-#- name: copy our wordpress exploit sql dumps
-#  template:
-#    src: "templates/{{ item }}"
-#    dest: "/tmp/{{ item }}"
-#    owner: apache
-#    group: apache
-#    mode: 0644
-#  with_items:
-#    - db_open_public_root.sql
-#    - cat_meme_takeover.sql
-
-#- name: copy our cat meme exploit script
-#  template:
-#    src: "templates/{{ item }}"
-#    dest: "/tmp/{{ item }}"
-#    owner: root
-#    group: root
-#    mode: 0755
-#  with_items:
-#    - db_open_public_root.sh
-#    - cat_meme_takeover.sh
