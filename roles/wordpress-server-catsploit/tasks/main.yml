@@ -13,18 +13,18 @@
     - { name: "cat_meme_takeover.sh", destdir: "/tmp", chmod: "0755", user: "root", group: "wheel" }
     - { name: "cat_meme_takeover.sql", destdir: "/tmp", chmod: "0644", user: "root", group: "wheel" }
 
-- name: Make sure our directory structure is in place
-  file:
-    state: directory
-    path: "{{ item.name }}"
-    mode: "{{ item.chmod }}"
-    owner: "{{ item.user }}"
-    group: "{{ item.group }}"
-  with_items:
-    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit", chmod: "0755", user: "apache", group: "apache" }
-    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/assets/images", chmod: "0755", user: "apache", group: "apache" }
-    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/inc", chmod: "0755", user: "apache", group: "apache" }
-    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/template-parts/header", chmod: "0755", user: "apache", group: "apache" }
+#- name: Make sure our directory structure is in place
+#  file:
+#    state: directory
+#    path: "{{ item.name }}"
+#    mode: "{{ item.chmod }}"
+#    owner: "{{ item.user }}"
+#    group: "{{ item.group }}"
+#  with_items:
+#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit", chmod: "0755", user: "apache", group: "apache" }
+#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/assets/images", chmod: "0755", user: "apache", group: "apache" }
+#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/inc", chmod: "0755", user: "apache", group: "apache" }
+#    - { name: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/template-parts/header", chmod: "0755", user: "apache", group: "apache" }
 
 - name: Make sure no unwanted themes exist.
   file:
@@ -34,6 +34,10 @@
     - { name: "{{ wpwebpath }}/wp-content/themes/twentysixteen" }
     - { name: "{{ wpwebpath }}/wp-content/themes/twentynineteen" }
 
+- name: Synchronization of src on the control machine to dest on the remote hosts
+  synchronize:
+    src: templates/twentyseventeen-catsploit/
+    dest: "{{ wpwebpath }}/wp-content/themes/twentyseventeen-catsploit/"
 
 
 
