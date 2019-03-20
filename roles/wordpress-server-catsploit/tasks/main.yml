@@ -34,6 +34,14 @@
     - { name: "{{ wpwebpath }}/wp-content/themes/twentysixteen" }
     - { name: "{{ wpwebpath }}/wp-content/themes/twentynineteen" }
 
+- name: disable requiretty in sudo, so that synchronize works
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^(Defaults\s+requiretty)$'
+    line: '# \1'
+    backrefs: yes
+    validate: '/usr/sbin/visudo -cf %s'
+
 - name: Synchronization of src on the control machine to dest on the remote hosts
   synchronize:
     src: templates/twentyseventeen-catsploit/

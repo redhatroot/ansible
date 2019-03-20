@@ -4,18 +4,11 @@ function mychildtheme_enqueue_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'mychildtheme_enqueue_styles' ); 
 
-/*
-function mychildtheme_enqueue_styles() {
-    $parent_style = 'parent-style';
-
-    wp_enqueue_style( $parent_style, get_template_directory_uri() . '/style.css' );
-    wp_enqueue_style( 'child-style',
-        get_stylesheet_directory_uri() . '/style.css',
-        array( $parent_style )
-    );
+function my_custom_header_args( $args ) {
+  $args['default-image'] = get_theme_file_uri( '/assets/images/header.jpg' );
+  return $args;
 }
-add_action( 'wp_enqueue_scripts', 'mychildtheme_enqueue_styles' );
-*/
+add_filter( 'twentyseventeen_custom_header_args', 'my_custom_header_args' );
 
 ?>
 
