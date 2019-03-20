@@ -2,7 +2,7 @@
 - name: "checking to see if firewalld is running"
   shell: 'pgrep firewalld | wc -l'
   register: isfirewalldon
-  changed_when: isfirewalldon.stdout == "0"
+  changed_when: no
 
 - name: enabling firewall rules
   firewalld:

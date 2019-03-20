@@ -36,11 +36,12 @@
     group: root
     mode: 0644
   when: iswpcfg.stat.exists == False or dboverwrite == True
+  changed_when: dboverwrite == True
 
 - name: import wordpress.sql to our wordpress server
   raw: 'mysql {{ wpdbname }} < /tmp/wordpress.sql'
   when: iswpcfg.stat.exists == False or dboverwrite == True
-  ignore_errors: yes
+  changed_when: dboverwrite == True
 
 - name: copy graphics for our content
   copy:
@@ -52,10 +53,6 @@
   with_items:
     - automate_all_the_things.png
     - header_ansible.jpg
-    - header_cats.jpg
-    - cat-hack01.jpg
-    - cat-hack02.jpg
-    - cat-hack03.gif
 
 - name: copy our custom logo to the site
   copy:
@@ -78,3 +75,5 @@
   file:
     path: /tmp/wordpress.sql
     state: absent
+  changed_when: no
+

@@ -6,7 +6,7 @@
   vars:
     temp_inventory: ec2temp
     user_srvname: "kev-{{ user_event | replace (' ','') }}"
-    user_instype: i3.large
+    user_instype: t2.small
     user_image: ami-a8d369c0
     user_tags:
       Name: "{{ user_srvname }}"
@@ -23,14 +23,14 @@
   vars:
     ansible_ssh_user: ec2-user
     ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
-      # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
-    tower_shutdown: 90
     dboverwrite: True
   roles:
     - role: wordpress-server
+    - role: wordpress-server-catsploit
     - role: shutdown-time
       vars:
-        system_shutdown: 30
+        system_shutdown: 720
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
 
 
 
