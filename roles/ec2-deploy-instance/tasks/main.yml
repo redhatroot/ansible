@@ -22,21 +22,22 @@
   delegate_to: localhost
   changed_when: False
 
-#- name: Info about the EC2 instance
-#  debug:
-#    msg: "INFO {{ newec2info.tagged_instances[0] }}"
-#  ignore_errors: true
+- name: "Set a variable for newec2machine = {{ newec2info.tagged_instances[0].public_ip }}"
+  set_fact:
+     newec2machine: "{{ newec2info.tagged_instances[0].public_ip }}"
 
-- name: Wait 10 seconds and then check port 22 for 300 seconds
+- name: "Wait 15 seconds and probe {{ newec2machine }} ssh for 30 seconds"
   wait_for:
     port: 22
-    host: "{{ newec2info.tagged_instances[0].public_ip }}"
+    host: "{{ newec2machine }}"
     search_regex: OpenSSH
-    delay: 10
+    delay: 15
+    timeout: 30
   connection: local
 
-- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group {{ temp_inventory }}"
+- name: "add {{ newec2machine }} host to group {{ temp_inventory }}"
   add_host:
-    name: "{{ newec2info.tagged_instances[0].public_ip }}"
+    name: "{{ newec2machine }}"
     groups: "{{ temp_inventory }}"
   changed_when: False
+

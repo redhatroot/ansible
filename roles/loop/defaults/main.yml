@@ -1,0 +1,5 @@
+---
+# defaults file for loop
+loop_now: 0
+loop_start: 1
+loop_count: 1

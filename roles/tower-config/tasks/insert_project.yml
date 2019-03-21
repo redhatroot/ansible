@@ -1,0 +1,33 @@
+---
+- name: Insert the root machine credential
+  uri:
+    url: https://localhost/api/v2/projects/
+    validate_certs: no
+    method: POST
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    body_format: json
+    force_basic_auth: yes
+    status_code: 201
+    body: |
+      {
+          "name": "RedHatROoT Ansible-Demos",
+          "description": "",
+          "scm_type": "git",
+          "scm_url": "https://github.com/redhatroot/ansible-demos.git",
+          "scm_branch": "",
+          "scm_clean": false,
+          "scm_delete_on_update": false,
+          "credential": null,
+          "timeout": 0,
+          "organization": null,
+          "scm_update_on_launch": false,
+          "scm_update_cache_timeout": 0,
+          "custom_virtualenv": null
+      }
+  ignore_errors: yes
+  no_log: True
+  failed_when: False
+  changed_when: False
+
+

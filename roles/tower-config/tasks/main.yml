@@ -2,9 +2,9 @@
 # tasks file for GoKEV-lab-configtower
 
 - include: tower_settings.yml
-- include: tower_packages.yml
+#- include: tower_packages.yml
 - include: delete_defaults.yml
-- include: insert_credentials.yml
-- include: insert_project.yml
-- include: insert_inventory.yml
-- include: insert_jobtemplates.yml
+#- include: insert_credentials.yml
+#- include: insert_project.yml
+#- include: insert_inventory.yml
+#- include: insert_jobtemplates.yml

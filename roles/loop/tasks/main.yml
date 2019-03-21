@@ -1,0 +1,6 @@
+---
+# tasks file for loop
+
+- debug:
+    msg: "This is item number {{ loop_now }}"
+

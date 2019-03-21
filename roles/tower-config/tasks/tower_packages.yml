@@ -8,3 +8,4 @@
   yum:
     name: python2-pip
     state: present
+

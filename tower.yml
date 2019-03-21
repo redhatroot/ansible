@@ -1,0 +1,41 @@
+- name: Configure Tower
+  hosts: tower
+  become: yes
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_user: kev
+    tower_pass: kev
+    tower_email: root@redhat.com
+
+  roles:
+    - role: tower-config
+    - role: shutdown-time
+      vars:
+        system_shutdown: 720
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
+
+
+
+
+
+
+
+## Saving this for when I deploy the worker nodes
+#- name: Deploy some worker nodes
+#  hosts: localhost
+#  gather_facts: no
+#  roles:
+#    - role: ec2-deploy-instance
+
+#      vars:
+#        temp_inventory: ec2workertemp
+#        user_srvname: "kev-worker-{{ user_event | replace (' ','') }}"
+#        user_instype: t2.small
+#        user_image: ami-a8d369c0
+#        user_tags:
+#          Name: "{{ user_srvname }}"
+#          Event: "{{ user_event }}"
+#          Owner: "{{ user_realname }}"
+#          Contact: "{{ user_email }}"
+#          Application: "Ansible worker for {{ user_event }}

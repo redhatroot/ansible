@@ -1,5 +1,7 @@
 ---
 # defaults file for deploy-ec2-instance
+loop_start: 1
+loop_count: 1
 tower_inventory: newec2
 user_srvname: Default-Server-Name
 user_awskey: 000000000

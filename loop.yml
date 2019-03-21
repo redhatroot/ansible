@@ -1,0 +1,19 @@
+- name: GET SOME STUFF
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars:
+    loop_start: 1
+    loop_count: 5
+
+  tasks:
+  - name: Loop some stuff
+    include_role:
+      name: loop
+      public: yes
+    vars:
+      loop_now: "{{'%03d'|format(item|int) }}"
+    loop: "{{ range(loop_start | int, (loop_count+1 | int)) | list }}"
+
+

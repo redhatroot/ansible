@@ -1,72 +1,78 @@
 ---
 
-### HOSTS
+### INVENTORIES
 
+- name: capture the URI of Demo%20Inventory
+  set_fact:
+    uris_to_delete: []
 
-- name: DELETE default hosts item
+- name: Get the default inventory ID
   uri:
-    url: https://localhost/api/v2/hosts/1/
-    method: DELETE
+    url: https://localhost/api/v2/inventories/?name=Demo%20Inventory
+    validate_certs: no
+    method: GET
     user: "{{ tower_user }}"
     password: "{{ tower_pass }}"
-    validate_certs: False
+    body_format: json
     force_basic_auth: yes
-  failed_when: False
-  tags:
-    - delete_tower_defaults
+  register: demo_inventory
 
-- name: DELETE default inventory item
-  uri:
-    url: https://localhost/api/v2/inventories/1/
-    method: DELETE
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
-    validate_certs: False
-    force_basic_auth: yes
-  failed_when: False
-  tags:
-    - delete_tower_defaults
 
+- name: capture the URI of DemoInventory
+  set_fact:
+    uris_to_delete:
+        "{{ uris_to_delete }} + {{ demo_inventory.json.results[0].url }}"
+
+#    {{my_group + [item.hostname]}}
+
+
+
+- name: spit out the list
+  debug:
+    msg: "DELETING {{ item }}"
+  with_items: uris_to_delete
+
+#- name: "DELETE https://localhost{{ demo_inventory.json.results[0].url }}"
+#  uri:
+#    url: "https://localhost{{ demo_inventory.json.results[0].url }}"
+#    validate_certs: no
+#    method: DELETE
+#    user: "{{ tower_user }}"
+#    password: "{{ tower_pass }}"
+#    force_basic_auth: yes
+#    status_code: 201
+#  ignore_errors: yes
+#  no_log: True
+#  failed_when: False
+#  changed_when: False
 
 ### CREDENTIALS
 
-
-- name: DELETE default credentials
-  uri:
-    url: https://localhost/api/v2/credentials/1/
-    method: DELETE
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
-    validate_certs: False
-    force_basic_auth: yes
-  failed_when: False
-  tags:
-    - delete_tower_defaults
-
+#- name: Get the default inventory ID
+#  uri:
+#    url: https://localhost/api/v2/credentials/?name=Demo%20Credential
+#    validate_certs: no
+#    method: GET
+#    user: "{{ tower_user }}"
+#    password: "{{ tower_pass }}"
+#    body_format: json
+#    force_basic_auth: yes
+#  register: demo_credential
+#
 
 ### PROJECTS
 
+### JOB TEMPLATES
 
-- name: DELETE default project
-  uri:
-    url: https://localhost/api/v2/projects/4/
-    method: DELETE
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
-    validate_certs: False
-    force_basic_auth: yes
-  failed_when: False
-  tags:
-    - delete_tower_defaults
+#- name: DELETE default project
+#  uri:
+#    url: https://localhost/api/v2/projects/4/
+#    method: DELETE
+#    user: "{{ tower_user }}"
+#    password: "{{ tower_pass }}"
+#    validate_certs: False
+#    force_basic_auth: yes
+#  failed_when: False
+#  tags:
+#    - delete_tower_defaults
 
-- name: DELETE default job template
-  uri:
-    url: https://localhost/api/v2/job_templates/5/
-    method: DELETE
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
-    validate_certs: False
-    force_basic_auth: yes
-  failed_when: False
-  tags:
-    - delete_tower_defaults
