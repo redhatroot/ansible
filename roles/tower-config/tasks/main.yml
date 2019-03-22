@@ -3,8 +3,14 @@
 
 - include: tower_settings.yml
 #- include: tower_packages.yml
-- include: delete_defaults.yml
-#- include: insert_credentials.yml
-#- include: insert_project.yml
-#- include: insert_inventory.yml
-#- include: insert_jobtemplates.yml
+
+- include: delete_default_credentials.yml
+- include: delete_default_inventory.yml
+- include: delete_default_projects.yml
+- include: delete_default_jobtemplates.yml
+
+- include: insert_credentials.yml
+- include: insert_inventory.yml
+- include: insert_project.yml
+- include: insert_jobtemplates.yml
+

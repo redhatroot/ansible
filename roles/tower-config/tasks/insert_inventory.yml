@@ -1,26 +1,4 @@
 ---
-#- name: check some debug stuff
-#  debug:
-#    msg: "{{ tower_host }} and {{ tower_user }} and {{ tower_pass }} seem to be set"
-
-
-#- name: Add tower inventory source
-#  tower_inventory_source:
-#    tower_host: "{{ inventory_hostname }}"
-#    tower_username: "{{ tower_user }}"
-#    tower_password: "{{ tower_pass }}"
-#    name: Inventory source
-#    description: My Inventory source
-#    inventory: My inventory
-#    credential: Devstack_credential
-#    source: openstack
-#    update_on_launch: true
-#    overwrite: true
-#    source_vars: '{ private: false }'
-#    state: present
-#    tower_verify_ssl: false
-
-
 - name: Insert the new inventory
   uri:
     url: https://localhost/api/v2/inventories/
@@ -35,7 +13,7 @@
       {
           "name": "Lab Instances",
           "description": "These are the instances populated automatically for you.",
-          "organization": 1,
+          "organization": "1",
           "kind": "",
           "host_filter": null,
           "variables": "---\nansible_password: 1234\nother_var: GoKEV",
@@ -45,9 +23,8 @@
   no_log: True
   failed_when: False
   changed_when: False
-  register: new_inventory_id
 
-- name: Get the new inventory ID
+- name: Get the ID of the new inventory
   uri:
     url: https://localhost/api/v2/inventories/?name=Lab%20Instances
     validate_certs: no
@@ -56,13 +33,11 @@
     password: "{{ tower_pass }}"
     body_format: json
     force_basic_auth: yes
-  register: inventory_out
+  register: inventory_insert
 
+#- debug:
+#    msg: "{{ inventory_insert }}"
 
-- name: spit out inventory result
-  debug:
-    msg: "{{ inventory_out }}"
+- set_fact:
+    new_inventory_id: "{{ inventory_insert.json.results[0].id }}"
 
-- name: spit out inventory ID specifically
-  debug:
-    msg: "{{ inventory_out.results }}"

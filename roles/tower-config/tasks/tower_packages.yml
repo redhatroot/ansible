@@ -9,3 +9,7 @@
     name: python2-pip
     state: present
 
+- name: Update All Packages
+  yum:
+    name: "*"
+    state: latest

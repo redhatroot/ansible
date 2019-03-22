@@ -1,7 +1,8 @@
 ---
 # tasks file for deploy-ec2-instance
 
-- ec2:
+- name: "Provision {{ user_srvname }}"
+  ec2:
     aws_access_key: "{{ user_awskey }}"
     aws_secret_key: "{{ user_awssec }}"
     key_name: "{{ user_sshkey }}"
@@ -22,22 +23,18 @@
   delegate_to: localhost
   changed_when: False
 
-- name: "Set a variable for newec2machine = {{ newec2info.tagged_instances[0].public_ip }}"
-  set_fact:
-     newec2machine: "{{ newec2info.tagged_instances[0].public_ip }}"
-
-- name: "Wait 15 seconds and probe {{ newec2machine }} ssh for 30 seconds"
+- name: "Wait 15 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} ssh for 30 seconds"
   wait_for:
     port: 22
-    host: "{{ newec2machine }}"
+    host: "{{ newec2info.tagged_instances[0].public_ip }}"
     search_regex: OpenSSH
     delay: 15
     timeout: 30
   connection: local
 
-- name: "add {{ newec2machine }} host to group {{ temp_inventory }}"
+- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group {{ temp_inventory }}"
   add_host:
-    name: "{{ newec2machine }}"
+    name: "{{ newec2info.tagged_instances[0].public_ip }}"
     groups: "{{ temp_inventory }}"
   changed_when: False
 

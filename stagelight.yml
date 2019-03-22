@@ -16,7 +16,7 @@
       loop_now: "{{'%03d'|format(item|int) }}"
       temp_inventory: ec2towertemp
       user_srvname: "kev-tower{{ loop_now }}-{{ user_event | replace (' ','') }}"
-      user_instype: i3.large
+      user_instype: t2.small
       user_image: ami-0c170ccfc104032e3
       user_tags:
         Name: "{{ user_srvname }}"
@@ -67,3 +67,9 @@
 #          Owner: "{{ user_realname }}"
 #          Contact: "{{ user_email }}"
 #          Application: "Ansible worker for {{ user_event }}
+
+
+
+#       m5d.xlarge has 4cpu/16ram/150ssd/.23c
+#       user_instype: m5d.xlarge
+

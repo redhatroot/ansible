@@ -1,0 +1,28 @@
+---
+
+### PROJECTS
+
+- name: Get the default project template ID
+  uri:
+    url: https://localhost/api/v2/projects/?name=Demo%20Project
+    validate_certs: no
+    method: GET
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    body_format: json
+    force_basic_auth: yes
+  register: demo_project
+
+- name: "DELETE https://localhost{{ demo_project.json.results[0].url }}"
+  uri:
+    url: "https://localhost{{ demo_project.json.results[0].url }}"
+    validate_certs: no
+    method: DELETE
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    force_basic_auth: yes
+    status_code: 201
+  ignore_errors: yes
+  no_log: True
+  failed_when: False
+  changed_when: False
