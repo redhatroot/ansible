@@ -1,6 +1,6 @@
 - name: make sure we are ready to go
   debug:
-    msg: "We are about to build a job template with INV {{ new_inventory_id }}, PROJ {{ new_project_id }}, and CRED {{ new_machine_credential_id }}"
+    msg: "We are about to build a job template with INV {{ new_inventory_id }}, PROJ {{ new_project_id }}, machine CRED {{ new_machine_credential_id }}, and vault CRED {{ new_vault_credential_id }}"
 
 - name: Insert the new job template
   uri:
@@ -23,7 +23,7 @@
           "forks": 0,
           "limit": "",
           "verbosity": 0,
-          "extra_vars": "---\nvar1: one\nvar2: two",
+          "extra_vars": "---\nloop_count: 15\nloop_message: This variable and loop count can be set in the job template extra vars.",
           "job_tags": "",
           "force_handlers": false,
           "skip_tags": "",
@@ -49,7 +49,7 @@
           "credential": {{ new_machine_credential_id }},
           "vault_credential": {{ new_vault_credential_id }}
       }
-#  ignore_errors: yes
-#  no_log: True
-#  failed_when: False
-#  changed_when: False
+  ignore_errors: yes
+  no_log: True
+  failed_when: False
+  changed_when: False
