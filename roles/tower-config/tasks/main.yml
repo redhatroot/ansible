@@ -20,8 +20,8 @@
 # Inventory
 - include: insert/inventory_LabMachines.yml
 
+# Job Templates
 #- include: insert/jobtemplate_deprovision.yml
-#- include: insert/jobtemplate_doprovision.yml
 - include: insert/jobtemplate_loop.yml
 
 

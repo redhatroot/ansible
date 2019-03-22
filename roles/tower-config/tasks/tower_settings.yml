@@ -5,7 +5,7 @@
   ignore_errors: yes
   no_log: True
   changed_when: False
-  delegate_to: "{{ inventory_hostname }}"
+#  delegate_to: "{{ inventory_hostname }}"
 
 - name: Attach a license file
   uri:
