@@ -16,7 +16,7 @@
       loop_now: "{{'%03d'|format(item|int) }}"
       temp_inventory: ec2towertemp
       user_srvname: "kev-tower{{ loop_now }}-{{ user_event | replace (' ','') }}"
-      user_instype: t2.small
+      user_instype: t2.medium
       user_image: ami-0c170ccfc104032e3
       user_tags:
         Name: "{{ user_srvname }}"

@@ -2,7 +2,7 @@
 # tasks file for GoKEV-lab-configtower
 
 - include: tower_settings.yml
-#- include: tower_packages.yml
+- include: tower_packages.yml
 
 - include: delete_default_credentials.yml
 - include: delete_default_inventory.yml
