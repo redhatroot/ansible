@@ -7,9 +7,9 @@
 These are preconfigured projects that collectively share the roles in the directory.
 
 
-## Here's an example of how you could launch this role:
+## Here's an example of how you could launch this process:
 <pre>
-ansible-playbook -e @secrets.yml playbook.yml
+ansible-playbook -e @secrets.yml LimeLight-Deploy.yml
 </pre>
 
 ## With a secrets file called secrets.yml that looks like this:

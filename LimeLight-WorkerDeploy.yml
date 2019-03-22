@@ -1,0 +1,90 @@
+- name: Deploy a Tower instance
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars:
+    user_count: 1
+    user_region: us-east-1
+    user_realname: Kevin Holmes
+    user_email: kev@redhat.com
+    user_event: Lime To The Light
+
+  tasks:
+  - name: Deploy Tower
+    include_role:
+      name: ec2-deploy-instance
+      public: yes
+    vars:
+      loop_now: "{{'%03d'|format(item|int) }}"
+      temp_inventory: ec2towertemp
+      server_purpose: Tower
+      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
+      user_instype: t2.medium
+      user_image: ami-0c170ccfc104032e3
+      user_tags:
+        Name: "{{ user_srvname }}"
+        Owner: "{{ user_realname }}"
+        Contact: "{{ user_email }}"
+        LimeLight_Batch: "{{ loop_now }}"
+        LimeLight_Event: "{{ user_event }}"
+        LimeLight_Purpose: "{{ server_purpose }}"
+        LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
+        Application: "Ansible Tower for {{ user_event }}"
+    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+    tags: 
+      - tower
+
+  - name: Deploy Worker
+    include_role:
+      name: ec2-deploy-instance
+      public: yes
+    vars:
+      loop_now: "{{'%03d'|format(item|int) }}"
+      temp_inventory: ec2workertemp
+      server_purpose: Web
+      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
+      user_instype: t2.small
+      user_image: ami-a8d369c0
+      user_tags:
+        Name: "{{ user_srvname }}"
+        Owner: "{{ user_realname }}"
+        Contact: "{{ user_email }}"
+        LimeLight_Batch: "{{ loop_now }}"
+        LimeLight_Event: "{{ user_event }}"
+        LimeLight_Purpose: "{{ server_purpose }}"
+        LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
+        Application: "Ansible Tower for {{ user_event }}"
+    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+    tags: 
+      - worker
+
+- name: Configure Tower against ec2towertemp inventory
+  hosts: ec2towertemp
+  become: yes
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_user: kev
+    tower_pass: kev
+    tower_email: root@redhat.com
+
+  roles:
+    - role: tower-config
+    - role: shutdown-time
+      vars:
+        system_shutdown: 720
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
+
+- name: Configure Web against ec2towertemp inventory
+  hosts: ec2workertemp
+  become: yes
+  vars:
+    ansible_ssh_user: ec2_user
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+
+  roles:
+    - role: shutdown-time
+      vars:
+        system_shutdown: 720
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
