@@ -5,7 +5,7 @@
 
   vars:
     loop_start: 1
-    loop_count: 3
+    loop_count: 1
 
   tasks:
   - name: Loop some stuff
@@ -24,7 +24,7 @@
         Owner: "{{ user_realname }}"
         Contact: "{{ user_email }}"
         Application: "Ansible Tower for {{ user_event }}"
-    loop: "{{ range(loop_start | int, (loop_count+1 | int)) | list }}"
+    loop: "{{ range( 1 | int, (loop_count+1 | int)) | list }}"
 
 
 - name: Configure Tower against ec2towertemp inventory

@@ -2,5 +2,5 @@
 # tasks file for loop
 
 - debug:
-    msg: "This is item number {{ loop_now }}"
+    msg: "{{ loop_message }} {{ loop_now }}"
 

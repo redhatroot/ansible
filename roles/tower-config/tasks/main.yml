@@ -4,13 +4,24 @@
 - include: tower_settings.yml
 - include: tower_packages.yml
 
-- include: delete_default_credentials.yml
-- include: delete_default_inventory.yml
-- include: delete_default_projects.yml
-- include: delete_default_jobtemplates.yml
+# Remove the default Tower stuff
+- include: remove/default_credentials.yml
+- include: remove/default_inventory.yml
+- include: remove/default_jobtemplates.yml
+- include: remove/default_projects.yml
 
-- include: insert_credentials.yml
-- include: insert_inventory.yml
-- include: insert_project.yml
-- include: insert_jobtemplates.yml
+# Projects go first or out job template insert could fail
+- include: insert/project_RedHatROoT-Ansible-Demos.yml
+
+# Credentials
+- include: insert/credential_MachineRoot.yml
+- include: insert/credential_LabVault.yml
+
+# Inventory
+- include: insert/inventory_LabMachines.yml
+
+#- include: insert/jobtemplate_deprovision.yml
+#- include: insert/jobtemplate_doprovision.yml
+- include: insert/jobtemplate_loop.yml
+
 

@@ -1,5 +1,5 @@
 ---
-- name: Insert the root machine credential
+- name: Insert the RedHatROoT-Ansible-Demos project
   uri:
     url: https://localhost/api/v2/projects/
     validate_certs: no
@@ -30,7 +30,8 @@
   failed_when: False
   changed_when: False
 
-- name: Get the default project template ID
+## If the project already existed, the output is different from the input. Instead we query again and parse the ID here.
+- name: Get ID from RedHatROoT-Ansible-Demos project ID
   uri:
     url: https://localhost/api/v2/projects/?name=RedHatROoT%20Ansible-Demos
     validate_certs: no
@@ -41,10 +42,8 @@
     force_basic_auth: yes
   register: project_insert
 
-- set_fact:
-    new_project_id: "{{ project_insert.json.results[0].id }}"
-
-- name: "Update the project we just inserted ID {{ project_insert.json.results[0].url }}"
+## Race condition can exist if we insert the job template before the yml file exists so we update it here
+- name: "Update the RedHatROoT-Ansible-Demos project ID {{ project_insert.json.results[0].url }}"
   uri:
     url: "https://localhost{{ project_insert.json.results[0].url }}update/"
     validate_certs: no
@@ -60,4 +59,19 @@
   failed_when: False
   changed_when: False
 
+## Race condition is eliminated by adding the UNTIL to the bottom here to make sure sync is complete
+- name: Get the default project template ID
+  uri:
+    url: https://localhost/api/v2/projects/?name=RedHatROoT%20Ansible-Demos
+    validate_certs: no
+    method: GET
+    user: "{{ tower_user }}"
+    password: "{{ tower_pass }}"
+    body_format: json
+    force_basic_auth: yes
+  register: project_insert
+  until:  project_insert.json.results[0].status == "successful"
+
+- set_fact:
+    new_project_id: "{{ project_insert.json.results[0].id }}"
 

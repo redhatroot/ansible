@@ -9,7 +9,8 @@
     name: python2-pip
     state: present
 
-- name: Update All Packages
-  yum:
-    name: "*"
-    state: latest
+# takes longer than 30 seconds.  I'll comment it out unless it's necessary
+#- name: Update All Packages
+#  yum:
+#    name: "*"
+#    state: latest
