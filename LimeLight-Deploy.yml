@@ -17,13 +17,13 @@
       public: yes
     vars:
       loop_now: "{{'%03d'|format(item|int) }}"
-      temp_inventory: ec2towertemp
+      new_inventory: 
+        - newtower
+        - "{{ server_purpose }}{{ loop_now }}"
       server_purpose: Tower
-      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}"
       user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
       user_instype: t2.medium
       user_image: ami-0c170ccfc104032e3
-      ec2_loop: null
       user_tags:
         Name: "{{ user_srvname }}"
         Owner: "{{ user_realname }}"
@@ -35,21 +35,16 @@
         Application: "Ansible Tower for {{ user_event }}"
     loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
 
-
-#    with_sequence: start=1 end="{{ user_count }}"
-#    with_sequence:
-#      start: 1
-#      end: 3
-#      format="%03"
-
-
   - name: Deploy Worker
     include_role:
       name: ec2-deploy-instance
       public: yes
     vars:
-      loop_now: "{{'%03d'|format(item|int) }}"
-      temp_inventory: ec2workertemp
+      loop_now: "{{ '%03x' | format(item.0) }}{{ item.1 }}"
+      new_inventory:
+        - newworkers
+        - newweb
+        - "{{ server_purpose }}{{ '%03x' | format(item.0) }}"
       server_purpose: Web
       user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
       user_instype: t2.small
@@ -58,7 +53,7 @@
         Name: "{{ user_srvname }}"
         Owner: "{{ user_realname }}"
         Contact: "{{ user_email }}"
-        LimeLight_Batch: "{{ loop_now }}"
+        LimeLight_Batch: "{{ '%03x' | format(item.0) }}"
         LimeLight_Event: "{{ user_event }}"
         LimeLight_Purpose: "{{ server_purpose }}"
         LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
@@ -72,7 +67,7 @@
 ###     CONFIGURE TOWER NODES
 
 - name: Configure Tower against ec2towertemp inventory
-  hosts: ec2towertemp
+  hosts: tower
   become: yes
   vars:
     ansible_ssh_user: centos
@@ -85,7 +80,7 @@
     - role: tower-config
     - role: shutdown-time
       vars:
-        system_shutdown: 720
+        system_shutdown: 3
         # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
 
 
@@ -93,7 +88,7 @@
 ###     CONFIGURE WORKER NODES
 
 - name: Configure Web against ec2workertemp inventory
-  hosts: ec2workertemp
+  hosts: newweb
   become: yes
   vars:
     ansible_ssh_user: ec2-user
@@ -102,5 +97,5 @@
   roles:
     - role: shutdown-time
       vars:
-        system_shutdown: 720
+        system_shutdown: 3
         # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
