@@ -1,50 +1,111 @@
-- name: GET SOME STUFF
+---
+- name: Deploy LimeLight Tower instances
   hosts: localhost
   gather_facts: no
   connection: local
 
   vars:
-    loop_count: 5
-    loop_message: "You can set a message with the variable loop_message but you didn't.  This is just the default message, which is kind of boring.  Pass a value for loop_message and it will be much more fun."
+    big_inventory: []
+    ec2_loop:
+      - A
+      - B
+      - C
 
   tasks:
-  - name: init numbers list
-    set_fact:
-      my_number_list: []
-      my_letter_list: 
-        - A
-        - B
-        - C
+  - name: Loop Numbers
+    include_role:
+      name: loop
+      public: yes
+    vars:
+      loop_now: "{{'%03d'|format(item|int) }}"
+      ll_batch: "{{'%03d'|format(item|int) }}"
+      new_inventory:
+        - newtower
+        - "{{ server_purpose }}{{ loop_now }}"
+      loop_message: "{{ new_inventory }}"
+      server_purpose: Tower
+      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
+      user_instype: t2.medium
+      user_image: ami-0c170ccfc104032e3
+      user_tags:
+        Name: "{{ user_srvname }}"
+        Owner: "{{ user_realname }}"
+        Contact: "{{ user_email }}"
+        LimeLight_Batch: "{{ ll_batch }}"
+        LimeLight_Event: "{{ user_event }}"
+        LimeLight_Purpose: "{{ server_purpose }}"
+        LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
+        Application: "Ansible Tower for {{ user_event }}"
+    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
 
-  - name: set numbers list
-    set_fact:
-      my_number_list: "{{ my_number_list + [item] }}"
-    loop: "{{ range(1 | int, (loop_count+1 | int)) | list }}"
-
-
-
-  - name: debug the list
-    debug:
-      msg: "{{ item[0] }}{{ item[1] }}"
+  - name: Loop Letters
+    include_role:
+      name: loop
+      public: yes
+    vars:
+      loop_now: "{{ '%03x' | format(item.0) }}{{ item.1 }}"
+      ll_batch: "{{ '%03x' | format(item.0) }}"
+      new_inventory:
+        - newworkers
+        - newweb
+        - "{{ server_purpose }}{{ '%03x' | format(item.0) }}"
+      loop_message: "{{ new_inventory }}"
+      server_purpose: Web
+      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
+      user_instype: t2.small
+      user_image: ami-a8d369c0
+      user_tags:
+        Name: "{{ user_srvname }}"
+        Owner: "{{ user_realname }}"
+        Contact: "{{ user_email }}"
+        LimeLight_Batch: "{{ ll_batch "
+        LimeLight_Event: "{{ user_event }}"
+        LimeLight_Purpose: "{{ server_purpose }}"
+        LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
+        Application: "Ansible Tower for {{ user_event }}"
     with_nested:
-      my_number_list
-      my_letter_list
+      - "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+      - "{{ ec2_loop }}"
+
+  - name: Display big_inventory
+    debug:
+      msg: "{{ big_inventory }}"
 
 
 
-#  - name: Loop some stuff
-#    include_role:
-#      name: loop
-#      public: yes
-#    vars:
-#      loop_now: "{{'%03d'|format(item|int) }}"
-#    loop: "{{ range(1 | int, (loop_count+1 | int)) | list }}"
+###############################################################################
+###     CONFIGURE TOWER NODES
 
-#  - name: Loop some more stuff
-#    include_role:
-#      name: loop
-#      public: yes
-#    vars:
-#      loop_now: "{{'%03d'|format(item|int) }}"
-#    with_sequence: start=1 end="{{ loop_count }}"
+- name: Configure Tower against newtower inventory
+  hosts: newtower
+  become: yes
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_user: kev
+    tower_pass: kev
+    tower_email: root@redhat.com
 
+  roles:
+    - role: tower-config
+    - role: shutdown-time
+      vars:
+        system_shutdown: 90
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
+
+
+###############################################################################
+###     CONFIGURE WORKER NODES
+
+- name: Configure Web against newweb inventory
+  hosts: newweb
+  become: yes
+  vars:
+    ansible_ssh_user: ec2-user
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+
+  roles:
+    - role: shutdown-time
+      vars:
+        system_shutdown: 90
+        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days

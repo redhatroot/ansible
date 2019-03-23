@@ -1,0 +1,10 @@
+---
+# tasks file for LimeLight-API
+- name: software tasks
+  include_tasks: software.yml
+
+- name: MySQL tasks
+  include_tasks: mysql.yml
+
+- name: httpd tasks
+  include_tasks: httpd.yml

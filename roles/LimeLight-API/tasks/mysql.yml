@@ -1,0 +1,20 @@
+---
+- name: making sure mariadb is started
+  service:
+    name: mariadb.service
+    state: started
+    enabled: yes
+
+- name: LLAPI DB exists
+  mysql_db:
+    name: LLAPI
+    state: present
+
+- name: LLAPI DB user config is good
+  mysql_user:
+    host: localhost
+    name: llapi
+    password: "{{ tzero_pass }}"
+    priv: LLAPI.*:ALL
+    update_password: always
+    state: present

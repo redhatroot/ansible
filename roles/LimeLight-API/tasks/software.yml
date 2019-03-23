@@ -1,0 +1,15 @@
+---
+# tasks file for LimeLight-API
+- name: Software packages are present
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - unzip
+    - MySQL-python
+    - policycoreutils-python
+    - httpd
+    - php
+    - php-mysql
+    - mariadb
+    - mariadb-server

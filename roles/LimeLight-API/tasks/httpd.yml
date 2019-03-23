@@ -1,0 +1,20 @@
+---
+- name: httpd conf listening on 9999 instead
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^Listen '
+    insertafter: '^#Listen '
+    line: 'Listen 9999'
+
+- name: making sure httpd is started if it was already here before
+  service:
+    name: httpd.service
+    state: started
+    enabled: yes
+
+- name: httpd.conf serving up index.php as the default
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    insertafter: '^<Directory "/var/www">'
+    line: '    DirectoryIndex index.php'
+

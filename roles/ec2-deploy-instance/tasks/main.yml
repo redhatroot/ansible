@@ -1,37 +1,47 @@
 ---
 # tasks file for deploy-ec2-instance
-- name: "Provision {{ user_srvname }}"
+- name: "Provision {{ ll_ec2srvname }}"
   ec2:
-    aws_access_key: "{{ user_awskey }}"
-    aws_secret_key: "{{ user_awssec }}"
+    aws_access_key: "{{ user_awskey | default(omit) }}"
+    aws_secret_key: "{{ user_awssec | default(omit) }}"
     key_name: "{{ user_sshkey }}"
     group_id: "{{ user_secgrpid }}"
-    instance_type: "{{ user_instype }}"
-    image: "{{ user_image }}"
-    wait: yes
+    instance_type: "{{ ll_image_size }}"
+    image: "{{ ll_ami }}"
+    wait: "{{ 'no' if (user_terminate is defined and user_terminate == true) else 'yes' }}"
     wait_timeout: 600
     vpc_subnet_id: "{{ user_subnet }}"
     assign_public_ip: yes
     region: "{{ user_region }}"
-    instance_tags: "{{ user_tags }}"
+    instance_tags: "{{ ll_tags }}"
     count_tag:
-      Name: "{{ user_srvname }}"
+      Name: "{{ ll_ec2srvname }}"
     exact_count: "{{ '0' if (user_terminate is defined and user_terminate == true) else '1' }}"
     instance_initiated_shutdown_behavior: terminate
   register: newec2info
   delegate_to: localhost
   changed_when: False
 
-- name: "Wait 5 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} for 30 seconds"
-  wait_for_connection:
-    delay: 5
-    timeout: 30
-  when: user_terminate is not defined or user_terminate != true
+- name: Set TowerZERO IP
+  set_fact:
+    tzero_ip: "{{ newec2info.tagged_instances[0].public_ip }}"
+  when: item == 0 and ll_application == 'Tower'
+
+#- name: "Wait 5 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} for 30 seconds"
+#  wait_for_connection:
+#    delay: 5
+#    timeout: 30
+#  when: user_terminate is not defined or user_terminate != true
 
 - name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group temp inventory"
   add_host:
-    name: "{{ user_srvname }}"
+    name: "{{ ll_ec2srvname }}"
     ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
-    groups: "{{ new_inventory }}"
+    groups: "{{ ll_inventory }}"
+    ll_userid: "{{ ll_userid }}"
+    tzero_ip: "{{ tzero_ip }}"
   changed_when: False
   when: user_terminate is not defined or user_terminate != true
+
+
+ 
