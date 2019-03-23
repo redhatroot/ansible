@@ -4,6 +4,12 @@
   gather_facts: no
   connection: local
 
+  vars:
+    ec2_loop:
+      - A
+      - B
+      - C
+
   tasks:
   - name: Deploy Tower
     include_role:
@@ -13,6 +19,7 @@
       loop_now: "{{'%03d'|format(item|int) }}"
       temp_inventory: ec2towertemp
       server_purpose: Tower
+      user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}"
       user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
       user_instype: t2.medium
       user_image: ami-0c170ccfc104032e3
@@ -26,13 +33,15 @@
         LimeLight_Purpose: "{{ server_purpose }}"
         LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
         Application: "Ansible Tower for {{ user_event }}"
-    with_sequence: start=1 end="{{ user_count }}"
+    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+
+
+#    with_sequence: start=1 end="{{ user_count }}"
 #    with_sequence:
 #      start: 1
 #      end: 3
 #      format="%03"
 
-#    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
 
   - name: Deploy Worker
     include_role:
@@ -45,10 +54,6 @@
       user_srvname: "kev-{{ user_event | replace (' ','') }}-{{ server_purpose }}{{ loop_now }}"
       user_instype: t2.small
       user_image: ami-a8d369c0
-      ec2_loop:
-        - A
-        - B
-        - C
       user_tags:
         Name: "{{ user_srvname }}"
         Owner: "{{ user_realname }}"
@@ -58,7 +63,10 @@
         LimeLight_Purpose: "{{ server_purpose }}"
         LimeLight_EventGroup: "{{ user_event | replace (' ','') }}-{{ loop_now }}"
         Application: "Ansible Tower for {{ user_event }}"
-    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+    with_nested:
+      - "{{ range( 1 | int, (user_count+1 | int)) | list }}"
+      - "{{ ec2_loop }}"
+#    loop: "{{ range( 1 | int, (user_count+1 | int)) | list }}"
 
 ###############################################################################
 ###     CONFIGURE TOWER NODES
