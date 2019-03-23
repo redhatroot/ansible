@@ -66,8 +66,8 @@
 ###############################################################################
 ###     CONFIGURE TOWER NODES
 
-- name: Configure Tower against ec2towertemp inventory
-  hosts: tower
+- name: Configure Tower against newtower inventory
+  hosts: newtower
   become: yes
   vars:
     ansible_ssh_user: centos
@@ -87,7 +87,7 @@
 ###############################################################################
 ###     CONFIGURE WORKER NODES
 
-- name: Configure Web against ec2workertemp inventory
+- name: Configure Web against newweb inventory
   hosts: newweb
   become: yes
   vars:
@@ -97,5 +97,5 @@
   roles:
     - role: shutdown-time
       vars:
-        system_shutdown: 3
+        system_shutdown: 90
         # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days

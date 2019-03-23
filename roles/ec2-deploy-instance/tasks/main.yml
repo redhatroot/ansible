@@ -22,7 +22,7 @@
   delegate_to: localhost
   changed_when: False
 
-- name: "Wait 15 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} ssh for 30 seconds"
+- name: "Wait 5 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} for 30 seconds"
   wait_for_connection:
     delay: 5
     timeout: 30
