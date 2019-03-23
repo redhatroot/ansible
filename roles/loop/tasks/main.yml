@@ -2,5 +2,5 @@
 # tasks file for loop
 
 - debug:
-    msg: "{{ loop_message }} {{ loop_now }}"
-
+    msg: "{{ loop_message }} {{ loop_now }} {{ item }}"
+  with_sequence: start=142 end=144

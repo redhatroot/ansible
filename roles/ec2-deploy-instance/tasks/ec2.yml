@@ -1,0 +1,37 @@
+---
+# tasks file for deploy-ec2-instance
+- name: "Provision {{ user_srvname }}"
+  ec2:
+    aws_access_key: "{{ user_awskey }}"
+    aws_secret_key: "{{ user_awssec }}"
+    key_name: "{{ user_sshkey }}"
+    group_id: "{{ user_secgrpid }}"
+    instance_type: "{{ user_instype }}"
+    image: "{{ user_image }}"
+    wait: yes
+    wait_timeout: 600
+    vpc_subnet_id: "{{ user_subnet }}"
+    assign_public_ip: yes
+    region: "{{ user_region }}"
+    instance_tags: "{{ user_tags }}"
+    count_tag:
+      Name: "{{ user_srvname }}"
+    exact_count: "{{ '0' if (user_terminate is defined and user_terminate == true) else '1' }}"
+    instance_initiated_shutdown_behavior: terminate
+  register: newec2info
+  delegate_to: localhost
+  changed_when: False
+
+- name: "Wait 15 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} ssh for 30 seconds"
+  wait_for_connection:
+    delay: 5
+    timeout: 30
+  when: user_terminate is not defined or user_terminate != true
+
+- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group {{ temp_inventory }}"
+  add_host:
+    name: "{{ user_srvname }}"
+    ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
+    groups: "{{ temp_inventory }}"
+  changed_when: False
+  when: user_terminate is not defined or user_terminate != true

@@ -5,11 +5,10 @@
   ignore_errors: yes
   no_log: True
   changed_when: False
-#  delegate_to: "{{ inventory_hostname }}"
 
 - name: Attach a license file
   uri:
-    url: "https://{{ inventory_hostname }}/api/v2/config/"
+    url: "https://localhost/api/v2/config/"
     validate_certs: no
     method: POST
     user: "{{ tower_user }}"

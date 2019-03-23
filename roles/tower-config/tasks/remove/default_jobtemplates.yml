@@ -13,7 +13,7 @@
     force_basic_auth: yes
   register: demo_job_template
 
-- name: "DELETE https://localhost{{ demo_job_template.json.results[0].url }}"
+- name: Delete Demo Job Template
   uri:
     url: "https://localhost{{ demo_job_template.json.results[0].url }}"
     validate_certs: no
@@ -26,4 +26,5 @@
   no_log: True
   failed_when: False
   changed_when: False
+  when: demo_job_template.json.count == 1
 

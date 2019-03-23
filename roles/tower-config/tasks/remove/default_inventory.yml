@@ -13,7 +13,7 @@
     force_basic_auth: yes
   register: demo_inventory
 
-- name: "DELETE https://localhost{{ demo_inventory.json.results[0].url }}"
+- name: Delete Demo Inventory
   uri:
     url: "https://localhost{{ demo_inventory.json.results[0].url }}"
     validate_certs: no
@@ -26,3 +26,5 @@
   no_log: True
   failed_when: False
   changed_when: False
+  when: demo_inventory.json.count == 1
+

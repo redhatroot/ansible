@@ -8,12 +8,43 @@
     loop_message: "You can set a message with the variable loop_message but you didn't.  This is just the default message, which is kind of boring.  Pass a value for loop_message and it will be much more fun."
 
   tasks:
-  - name: Loop some stuff
-    include_role:
-      name: loop
-      public: yes
-    vars:
-      loop_now: "{{'%03d'|format(item|int) }}"
+  - name: init numbers list
+    set_fact:
+      my_number_list: []
+      my_letter_list: 
+        - A
+        - B
+        - C
+
+  - name: set numbers list
+    set_fact:
+      my_number_list: "{{ my_number_list + [item] }}"
     loop: "{{ range(1 | int, (loop_count+1 | int)) | list }}"
 
+
+
+  - name: debug the list
+    debug:
+      msg: "{{ item[0] }}{{ item[1] }}"
+    with_nested:
+      my_number_list
+      my_letter_list
+
+
+
+#  - name: Loop some stuff
+#    include_role:
+#      name: loop
+#      public: yes
+#    vars:
+#      loop_now: "{{'%03d'|format(item|int) }}"
+#    loop: "{{ range(1 | int, (loop_count+1 | int)) | list }}"
+
+#  - name: Loop some more stuff
+#    include_role:
+#      name: loop
+#      public: yes
+#    vars:
+#      loop_now: "{{'%03d'|format(item|int) }}"
+#    with_sequence: start=1 end="{{ loop_count }}"
 
