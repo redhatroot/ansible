@@ -8,3 +8,6 @@
 
 - name: httpd tasks
   include_tasks: httpd.yml
+
+- name: api pieces
+  include_tasks: api_pieces.yml

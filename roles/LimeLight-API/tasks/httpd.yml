@@ -5,12 +5,14 @@
     regexp: '^Listen '
     insertafter: '^#Listen '
     line: 'Listen 9999'
+  register: httpdconf
 
-- name: making sure httpd is started if it was already here before
+- name: Restarting HTTPD
   service:
     name: httpd.service
     state: started
     enabled: yes
+  when: httpdconf.changed
 
 - name: httpd.conf serving up index.php as the default
   lineinfile:

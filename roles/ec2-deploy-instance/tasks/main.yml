@@ -20,18 +20,17 @@
     instance_initiated_shutdown_behavior: terminate
   register: newec2info
   delegate_to: localhost
-  changed_when: False
+#  changed_when: False
 
-- name: Set TowerZERO IP
+- name: "validating tzero_ip var as {{ tzero_ip }}"
   set_fact:
     tzero_ip: "{{ newec2info.tagged_instances[0].public_ip }}"
-  when: item == 0 and ll_application == 'Tower'
+  when: (item == 0 and ll_application == 'Tower') and (user_terminate is not defined or user_terminate != true)
 
-#- name: "Wait 5 seconds and probe {{ newec2info.tagged_instances[0].public_ip }} for 30 seconds"
-#  wait_for_connection:
-#    delay: 5
-#    timeout: 30
-#  when: user_terminate is not defined or user_terminate != true
+#- name: "Probe {{ newec2info.tagged_instances[0].public_ip }} for 10 seconds"
+#  wait_for:
+#    timeout: 10
+#  when: (user_terminate is not defined or user_terminate != true) or (newec2info.changed)
 
 - name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group temp inventory"
   add_host:
@@ -43,5 +42,3 @@
   changed_when: False
   when: user_terminate is not defined or user_terminate != true
 
-
- 

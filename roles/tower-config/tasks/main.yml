@@ -19,6 +19,7 @@
 
 # Inventory
 - include: insert/inventory_LabMachines.yml
+- include: insert/inventory_Script.yml
 
 # Job Templates
 #- include: insert/jobtemplate_deprovision.yml

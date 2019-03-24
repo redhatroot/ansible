@@ -20,7 +20,6 @@
       ll_image_size: "{% if item == 0 %}{{ tzero_instype }}{% else %}{{ tower_instype }}{% endif %}"
       ll_ami: "{{ tower_ami }}"
       ll_inventory: "{% if item == 0 %}newtower, towerzero{% else %}newtower{% endif %}"
-      ll_inventory: "{% if item == 0 %}newtower, towerzero{% else %}newtower{% endif %}"
       ll_tags:
         Name: "{{ ll_ec2srvname }}"
         Owner: "{{ user_realname }}"
@@ -57,25 +56,6 @@
       - "{{ ll_web_seq }}"
 
 ###############################################################################
-###     CONFIGURE TOWER NODES
-
-- name: Configure Tower against newtower inventory
-  hosts: newtower
-  become: yes
-  vars:
-    ansible_ssh_user: centos
-    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
-    tower_user: "user{{ ll_userid }}"
-    tower_pass: "pass{{ ll_userid }}"
-    tower_email: root@redhat.com
-
-  roles:
-    - role: tower-config
-    - role: shutdown-time
-#      vars:
-#        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
-
-###############################################################################
 ###     CONFIGURE TOWER ZERO
 
 - name: Configure Tower against towerzero inventory
@@ -93,6 +73,25 @@
       vars:
         system_shutdown: -c
     - role: LimeLight-API
+
+###############################################################################
+###     CONFIGURE TOWER NODES
+
+- name: Configure Tower against newtower inventory
+  hosts: newtower
+  become: yes
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_user: "user{{ ll_userid }}"
+    tower_pass: "pass{{ ll_userid }}"
+    tower_email: root@redhat.com
+
+  roles:
+    - role: tower-config
+    - role: shutdown-time
+#      vars:
+#        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
 
 ###############################################################################
 ###     CONFIGURE WORKER NODES
