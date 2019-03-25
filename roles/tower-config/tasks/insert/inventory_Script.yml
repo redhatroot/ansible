@@ -13,7 +13,7 @@
       {
           "name": "LimeLight Lab Dynamic API",
           "description": "This inventory source queries a database driven source via API and custom script",
-          "script": "#!/bin/sh\n\ncurl http://{{ tzero_ip }}:9999/api/MyInventory.php",
+          "script": "#!/bin/sh\n\ncurl -s http://{{ tzero_ip }}:9999/api/myinventory/",
           "organization": 1
       }
   ignore_errors: yes

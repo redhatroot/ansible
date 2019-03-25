@@ -1,11 +1,20 @@
 ---
-- name: httpd conf listening on 9999 instead
-  lineinfile:
-    path: /etc/httpd/conf/httpd.conf
-    regexp: '^Listen '
-    insertafter: '^#Listen '
-    line: 'Listen 9999'
+- name: httpd.conf
+  copy:
+    src: templates/httpd.con.ll
+    dest: /etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
   register: httpdconf
+
+- name: .htaccess
+  copy:
+    src: templates/_htaccess
+    dest: /var/www/html/.htaccess
+    owner: nobody
+    group: nobody
+    mode: 0644
 
 - name: Restarting HTTPD
   service:
@@ -13,10 +22,3 @@
     state: started
     enabled: yes
   when: httpdconf.changed
-
-- name: httpd.conf serving up index.php as the default
-  lineinfile:
-    path: /etc/httpd/conf/httpd.conf
-    insertafter: '^<Directory "/var/www">'
-    line: '    DirectoryIndex index.php'
-

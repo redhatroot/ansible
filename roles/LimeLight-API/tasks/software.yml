@@ -13,3 +13,4 @@
     - php-mysql
     - mariadb
     - mariadb-server
+    - phpmyadmin
