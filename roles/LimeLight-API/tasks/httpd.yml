@@ -1,12 +1,19 @@
 ---
 - name: httpd.conf
   copy:
-    src: templates/httpd.con.ll
+    src: templates/httpd.conf.ll
     dest: /etc/httpd/conf/httpd.conf
     owner: root
     group: root
     mode: 0644
   register: httpdconf
+
+- name: Restarting HTTPD
+  service:
+    name: httpd.service
+    state: started
+    enabled: yes
+  when: httpdconf.changed
 
 - name: .htaccess
   copy:
@@ -16,9 +23,11 @@
     group: nobody
     mode: 0644
 
-- name: Restarting HTTPD
-  service:
-    name: httpd.service
-    state: started
-    enabled: yes
-  when: httpdconf.changed
+- name: api.php
+  copy:
+    src: templates/api.php
+    dest: /var/www/html/api.php
+    owner: nobody
+    group: nobody
+    mode: 0644
+
