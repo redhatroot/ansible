@@ -5,10 +5,17 @@
     state: started
     enabled: yes
 
-- name: LLAPI DB exists
+
+- name: Copy database dump file
+  copy:
+    src: templates/LLAPI.sql
+    dest: /tmp/LLAPI.sql
+
+- name: Restore structure for LLAPI DB
   mysql_db:
     name: LLAPI
-    state: present
+    state: import
+    target: /tmp/LLAPI.sql
 
 - name: LLAPI DB user config is good
   mysql_user:

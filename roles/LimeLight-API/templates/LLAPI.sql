@@ -34,15 +34,6 @@ CREATE TABLE `all_host_requests` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `all_host_requests`
---
-
-LOCK TABLES `all_host_requests` WRITE;
-/*!40000 ALTER TABLE `all_host_requests` DISABLE KEYS */;
-INSERT INTO `all_host_requests` VALUES (1,'kev.kev.kev.kev','005','web','web03','web03_ansible_host','1.2.3.4'),(2,'kev.kev.kev.kev','005','web','','web_var_one','this is var one'),(3,'kev.kev.kev.kev','005','all','','all_some_global_var','123'),(4,'kev.kev.kev.kev','005','web','web03','web03_ansible_user','ec2-user'),(5,'kev.kev.kev.kev','005','web','web03','web03_ansible_password','ansibleday'),(6,'kev.kev.kev.kev','005','web','','web_group_var_two','two'),(7,'kev.kev.kev.kev','005','all','','all_another_global_var','this is another global var'),(8,'kev.kev.kev.kev','005','app','app01','app_ansible_host','1.2.3.4'),(9,'kev.kev.kev.kev','005','app','web03','app_ansible_password','ansibleday'),(10,'kev.kev.kev.kev','005','web','web03','',''),(11,'kev.kev.kev.kev','005','app','web03','app_ansible_password','ansibleday'),(12,'kev.kev.kev.kev','005','web','web01','',''),(13,'kev.kev.kev.kev','005','web','web02','web03_ansible_password','ansibleday'),(14,'kev.kev.kev.kev','005','web','web03','web03_ansible_password','ansibleday'),(15,'','003','web','lasjdlkasja','ansible_host','1.2.3.4'),(16,'','003','web','fasdsad','ansible_host','2.3.4.5');
-/*!40000 ALTER TABLE `all_host_requests` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `config`
@@ -82,17 +73,6 @@ CREATE TABLE `requestors` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `requestors`
---
-
-LOCK TABLES `requestors` WRITE;
-/*!40000 ALTER TABLE `requestors` DISABLE KEYS */;
-INSERT INTO `requestors` VALUES (1,'kev.kev.kev.kev','000');
-/*!40000 ALTER TABLE `requestors` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

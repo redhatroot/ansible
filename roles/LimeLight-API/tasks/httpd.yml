@@ -31,3 +31,10 @@
     group: nobody
     mode: 0644
 
+- name: phpMyAdmin link
+  file:
+    src: /usr/share/phpMyAdmin/
+    dest: /var/www/html/pma
+    owner: nobody
+    group: nobody
+    state: link

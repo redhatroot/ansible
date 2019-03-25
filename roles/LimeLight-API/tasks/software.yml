@@ -1,5 +1,9 @@
 ---
-# tasks file for LimeLight-API
+- name: EPEL
+  yum:
+    name: epel-release
+    state: present
+
 - name: Software packages are present
   yum:
     name:
@@ -11,4 +15,9 @@
       - php-mysql
       - mariadb
       - mariadb-server
+      - phpMyAdmin
+      - nano
+      - wget
     state: latest
+
+
