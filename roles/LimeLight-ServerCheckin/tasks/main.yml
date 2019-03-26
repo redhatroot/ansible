@@ -14,9 +14,9 @@
 
 - name: Check in as a Worker server
   uri:
-    url: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_host }}/"
+    url: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_hostname }}/"
 
 - name: Check URL DEBUG for a Worker server
   debug:
-    msg: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_host }}/"
+    msg: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_hostname }}/"
 
