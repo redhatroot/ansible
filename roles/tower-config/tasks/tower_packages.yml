@@ -6,11 +6,15 @@
 
 - name: PIP
   yum:
-    name: python2-pip
+    name:
+      - python2-pip
+      - nano
     state: present
 
-# takes longer than 30 seconds.  I'll comment it out unless it's necessary
-#- name: Update All Packages
-#  yum:
-#    name: "*"
-#    state: latest
+- name: nanorc template
+  template:
+    src: templates/nanorc
+    dest: /etc/nanorc
+    owner: root
+    group: root
+    mode: 0644

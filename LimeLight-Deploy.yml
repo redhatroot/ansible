@@ -89,6 +89,7 @@
 
   roles:
     - role: tower-config
+    - role: LimeLight-ServerCheckin
     - role: shutdown-time
 #      vars:
 #        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
@@ -107,6 +108,7 @@
       var: tzero_ip
 
   roles:
+    - role: LimeLight-ServerCheckin
     - role: shutdown-time
 #      vars:
 #        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days

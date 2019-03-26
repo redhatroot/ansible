@@ -1,0 +1,22 @@
+---
+# tasks file for LimeLight-ServerCheckin
+
+- name: Check in as a Tower server
+  uri:
+    url: "http://{{ tzero_ip }}:9999/api/addtower/{{ ll_userid }}/"
+  when: ll_application == "Tower"
+
+- name: Check URL DEBUG for a Tower server
+  debug:
+    msg: "http://{{ tzero_ip }}:9999/api/addtower/{{ ll_userid }}/"
+  when: ll_application == "Tower"
+
+
+- name: Check in as a Worker server
+  uri:
+    url: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_host }}/"
+
+- name: Check URL DEBUG for a Worker server
+  debug:
+    msg: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ inventory_host }}/"
+

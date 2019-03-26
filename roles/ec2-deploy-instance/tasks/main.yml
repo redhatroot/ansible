@@ -37,8 +37,10 @@
     name: "{{ ll_ec2srvname }}"
     ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
     groups: "{{ ll_inventory }}"
+    ll_application: "{{ ll_application }}"
     ll_userid: "{{ ll_userid }}"
+    ll_sequence: "{{ ll_sequence }}"
+    ll_hostname: "{{ ll_hostname }}"
     tzero_ip: "{{ tzero_ip }}"
   changed_when: False
   when: user_terminate is not defined or user_terminate != true
-
