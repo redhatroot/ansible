@@ -1,5 +1,4 @@
 ---
-# tasks file for LimeLight-API
 - name: software tasks
   include_tasks: software.yml
 

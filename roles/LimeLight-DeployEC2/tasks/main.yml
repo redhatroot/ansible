@@ -1,0 +1,46 @@
+---
+- name: "Provision {{ ll_ec2srvname }}"
+  ec2:
+    aws_access_key: "{{ user_awskey | default(omit) }}"
+    aws_secret_key: "{{ user_awssec | default(omit) }}"
+    key_name: "{{ user_sshkey }}"
+    group_id: "{{ user_secgrpid }}"
+    instance_type: "{{ ll_image_size }}"
+    image: "{{ ll_ami }}"
+    wait: yes
+    wait_timeout: 600
+    vpc_subnet_id: "{{ user_subnet }}"
+    assign_public_ip: yes
+    region: "{{ user_region }}"
+    instance_tags: "{{ ll_tags }}"
+    count_tag:
+      Name: "{{ ll_ec2srvname }}"
+    exact_count: "{{ '0' if (user_terminate is defined and user_terminate == true) else '1' }}"
+    instance_initiated_shutdown_behavior: terminate
+  register: newec2info
+  delegate_to: localhost
+#  changed_when: False
+
+- name: "validating tzero_ip var as {{ tzero_ip }}"
+  set_fact:
+    tzero_ip: "{{ newec2info.tagged_instances[0].public_ip }}"
+  when: (item == 0 and ll_application == 'Tower') and (user_terminate is not defined or user_terminate != true)
+
+#- name: "Probe {{ newec2info.tagged_instances[0].public_ip }} for 10 seconds"
+#  wait_for:
+#    timeout: 10
+#  when: (user_terminate is not defined or user_terminate != true) or (newec2info.changed)
+
+- name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group temp inventory"
+  add_host:
+    name: "{{ ll_ec2srvname }}"
+    ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
+    groups: "{{ ll_inventory }}"
+    ll_myip: "{{ newec2info.tagged_instances[0].public_ip }}"
+    ll_application: "{{ ll_application }}"
+    ll_userid: "{{ ll_userid }}"
+    ll_sequence: "{{ ll_sequence }}"
+    ll_hostname: "{{ ll_hostname }}"
+    tzero_ip: "{{ tzero_ip }}"
+  changed_when: False
+  when: user_terminate is not defined or user_terminate != true

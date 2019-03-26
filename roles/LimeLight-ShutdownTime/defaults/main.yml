@@ -1,0 +1,8 @@
+---
+
+# Shutdown time in minutes
+#	1440 = 24 hours
+#	2160 = 36 hours
+#	2880 = 48 hours
+
+system_shutdown: 90

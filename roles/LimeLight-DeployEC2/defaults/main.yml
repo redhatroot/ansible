@@ -1,0 +1,20 @@
+---
+loop_start: 1
+loop_count: 1
+tower_inventory: newec2
+user_srvname: Default-Server-Name
+user_awskey: 000000000
+user_awssec: 000000000
+user_sshkey: my-key-name
+user_secgrpid: my-security-group
+user_instype: t2.small
+user_image: image-id
+user_subnet: my-subnet-id
+user_region: us-east-1
+user_tags:
+  Name: "{{ user_srvname }}"
+  Event: Some Demo Event
+  Owner: GoKEV
+  Contact: "kev@redhat.com"
+  Application: Tower AMI Deploy
+

@@ -1,0 +1,7 @@
+---
+- name: "Set system to shut down in {{ system_shutdown }} minutes from now"
+  command: "/sbin/shutdown -h {{ system_shutdown }}"
+  async: 0
+  poll: 0
+  changed_when: False
+

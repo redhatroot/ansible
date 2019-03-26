@@ -1,5 +1,4 @@
 ---
-# tasks file for wordpress-server
 - include: inst-firewall.yml
 - include: inst-software.yml
 - include: inst-wppackage.yml

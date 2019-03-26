@@ -9,7 +9,7 @@
 ###     DEPLOY TOWER NODES
   - name: Deploy Tower
     include_role:
-      name: ec2-deploy-instance
+      name: LimeLight-DeployEC2
       public: yes
     vars:
       ll_application: Tower
@@ -33,7 +33,7 @@
 ###     DEPLOY WEB NODES
   - name: Deploy Worker
     include_role:
-      name: ec2-deploy-instance
+      name: LimeLight-DeployEC2
       public: yes
     vars:
       ll_application: Web
@@ -69,10 +69,11 @@
     tower_email: root@redhat.com
 
   roles:
-    - role: shutdown-time
+    - role: LimeLight-ShutdownTime
       vars:
         system_shutdown: -c
     - role: LimeLight-API
+    - role: LimeLight-deck
 
 ###############################################################################
 ###     CONFIGURE TOWER NODES
@@ -88,9 +89,9 @@
     tower_email: root@redhat.com
 
   roles:
-    - role: tower-config
+    - role: LimeLight-TowerConfig
     - role: LimeLight-ServerCheckin
-    - role: shutdown-time
+    - role: LimeLight-ShutdownTime
 #      vars:
 #        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
 
@@ -109,6 +110,6 @@
 
   roles:
     - role: LimeLight-ServerCheckin
-    - role: shutdown-time
+    - role: LimeLight-ShutdownTime
 #      vars:
 #        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days

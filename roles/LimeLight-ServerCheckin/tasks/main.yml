@@ -1,5 +1,4 @@
 ---
-# tasks file for LimeLight-ServerCheckin
 
 - name: Check in as a Tower server
   uri:

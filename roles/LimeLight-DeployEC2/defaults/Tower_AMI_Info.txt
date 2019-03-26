@@ -1,0 +1,13 @@
+---
+
+##	FULL LIST AVAILABLE AT:
+##	https://www.ansible.com/products/tower/trial
+
+#############################################################################
+##	EC2 Region	Location	AMI TYPE	AMI ID
+#############################################################################
+##	us-east-1	N. Virginia	HVM		ami-0c170ccfc104032e3
+##	us-east-2	Ohio		HVM		ami-042c8b0add94380f1
+##	us-west-1	N. California	HVM		ami-07df01f833325d0d9
+##	us-west-2	Oregon		HVM		ami-06762d1b0a1849ca9
+##	ca-central-1	Central		HVM		ami-081872acf1675437a

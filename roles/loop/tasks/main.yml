@@ -1,5 +1,4 @@
 ---
-# tasks file for loop
 
 - debug:
     msg: "{{ loop_message }} {{ item }}"

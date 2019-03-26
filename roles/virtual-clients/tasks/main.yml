@@ -1,5 +1,4 @@
 ---
-# tasks file for virtual-clients
 
 - name: Virt-manager installed
   yum:

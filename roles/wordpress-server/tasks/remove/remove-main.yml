@@ -1,5 +1,4 @@
 ---
-# tasks file for removing wordpress-server
 - include: remove-wppackage.yml
 - include: firewall.yml
 - include: configure-mysql.yml

@@ -1,6 +1,4 @@
 ---
-# vars file for wordpress-server---
-# vars file for wordpress-server
 wpdbname: "WordPress"
 wpdbuser: "wordpressuser"
 wpdbpass: "wordpresspass"
