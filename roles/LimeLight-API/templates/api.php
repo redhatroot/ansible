@@ -177,6 +177,7 @@ function admin_inv($myuid){
 	while(list($grp,$host,$userid) = mysql_fetch_array($query)){
 		$host = "user" . $userid . "_" . $host;
 		$grp = "user" . $userid . "_" . $grp;
+		$inv['user-' . $userid]['hosts'][] = $host;
 		$inv[$grp]['hosts'][] = $host;
 	}
 

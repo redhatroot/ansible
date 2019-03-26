@@ -8,7 +8,7 @@
     group_id: "{{ user_secgrpid }}"
     instance_type: "{{ ll_image_size }}"
     image: "{{ ll_ami }}"
-    wait: "{{ 'no' if (user_terminate is defined and user_terminate == true) else 'yes' }}"
+    wait: "{{ 'no' if (user_terminate is defined and user_terminate == true) or (predeploy is defined and predeploy == true) else 'yes' }}"
     wait_timeout: 600
     vpc_subnet_id: "{{ user_subnet }}"
     assign_public_ip: yes
@@ -37,6 +37,7 @@
     name: "{{ ll_ec2srvname }}"
     ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
     groups: "{{ ll_inventory }}"
+    ll_myip: "{{ newec2info.tagged_instances[0].public_ip }}"
     ll_application: "{{ ll_application }}"
     ll_userid: "{{ ll_userid }}"
     ll_sequence: "{{ ll_sequence }}"
