@@ -36,8 +36,10 @@
     ll_userid: "{{ ll_userid }}"
     ll_sequence: "{{ ll_sequence }}"
     ll_hostname: "{{ ll_hostname }}"
+    ll_iamtowerzero: "{{ ll_iamtowerzero }}"
     tower_user: "{{ tower_user }}"
     tower_pass: "{{ tower_pass }}"
+    tzero_user: "{{ tzero_user }}"
     tzero_pass: "{{ tzero_pass }}"
     tzero_ip: "{{ tzero_ip }}"
   changed_when: False

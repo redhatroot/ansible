@@ -1,23 +1,12 @@
 ---
-- name: Include some tasks
-  include_tasks:
-    file: "{{ item }}"
-  vars:
-    tower_user: "{{ tower_user }}"
-    tower_pass: "{{ tower_pass }}"
-    license_file: "{{ license_file }}"
-  with_items:
-    - tower_settings.yml
-    - tower_packages.yml
-    - remove/default_credentials.yml
-    - remove/default_inventory.yml
-    - remove/default_jobtemplates.yml
-    - remove/default_projects.yml
-    - insert/project_RedHatROoT-Ansible-Demos.yml
-    - insert/credential_MachineRoot.yml
-    - insert/credential_LabVault.yml
-    - insert/inventory_LabMachines.yml
-    - insert/inventory_Script.yml
-    - insert/jobtemplate_loop.yml
+- include: tower_settings.yml
+- include: tower_packages.yml
+- include: remove_defaults.yml
 
+#    - insert/project_RedHatROoT-Ansible-Demos.yml
+#    - insert/credential_MachineRoot.yml
+#    - insert/credential_LabVault.yml
+#    - insert/inventory_LabMachines.yml
+#    - insert/inventory_Script.yml
+#    - insert/jobtemplate_loop.yml
 
