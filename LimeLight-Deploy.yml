@@ -19,9 +19,11 @@
       ll_hostname: "{{ user_event_short | replace (' ','') }}-{{ ll_application }}{{ ll_userid }}"
       ll_image_size: "{% if item == 0 %}{{ tzero_instype }}{% else %}{{ tower_instype }}{% endif %}"
       ll_ami: "{{ tower_ami }}"
-      ll_inventory: "{% if item == 0 %}newtower, towerzero{% else %}newtower{% endif %}"
+      ll_iamtowerzero: "{% if item == 0 %}true{% else %}false{% endif %}"
+      ll_inventory: newtower
       tower_user: "user{{ ll_userid }}"
       tower_pass: "pass{{ ll_userid }}"
+      tzero_user: "{{ tzero_user }}"
       tzero_pass: "{{ tzero_pass }}"
       ll_tags:
         Name: "{{ ll_ec2srvname }}"
@@ -59,9 +61,9 @@
       - "{{ ll_web_seq }}"
 
 ###############################################################################
-###     CONFIGURE TOWER ZERO
+###     CONFIGURE TOWER STUFF
 
-- name: Configure Tower against towerzero inventory
+- name: Configure Tower Nodes
   hosts: newtower
   become: yes
   vars:
@@ -69,31 +71,46 @@
     ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
     tower_email: root@redhat.com
 
-  roles:
-    - role: LimeLight-ShutdownTime
-      vars:
-        system_shutdown: -c
-    - role: LimeLight-TowerConfig
-      vars:
-        tower_user: "{{ tower_user }}"
-        tower_pass: "{{ tower_pass }}"
-        license_file: "{{ license_file }}"
-    - role: LimeLight-API
-    - role: LimeLight-ServerCheckin
-    - role: LimeLight-AnsiBolton_000-DeckFramework
-    - role: LimeLight-AnsiBolton_010_PeopleLoveAnsible
-    - role: LimeLight-AnsiBolton_011_InstallingAnsible
-    - role: LimeLight-AnsiBolton_101-AnsibleModules
-    - role: LimeLight-AnsiBolton_102-AnsibleInventory
-    - role: LimeLight-AnsiBolton_103-AdHocCommands
-    - role: LimeLight-AnsiBolton_104-FactsAndVars
-    - role: LimeLight-AnsiBolton_105-TasksInAPlay
-    - role: LimeLight-AnsiBolton_106-HandlerTasks
-    - role: LimeLight-AnsiBolton_107-AnatomyOfAPlaybook
-    - role: LimeLight-AnsiBolton_108-DoMore
-    - role: LimeLight-AnsiBolton_109-Vault
-    - role: LimeLight-AnsiBolton_110-Roles
-    - role: LimeLight-AnsiBolton_111-RoleDistribution
+  tasks:
+
+  - name: ll_iamtowerzero
+    debug:
+      msg: "{{ ll_iamtowerzero }}"
+
+  - name: Import TowerZero Roles
+    include_role:
+      name: "{{ item }}"
+    with_items:
+      - LimeLight-AnsiBolton_000-DeckFramework
+      - LimeLight-AnsiBolton_010_PeopleLoveAnsible
+      - LimeLight-AnsiBolton_011_InstallingAnsible
+      - LimeLight-AnsiBolton_101-AnsibleModules
+      - LimeLight-AnsiBolton_102-AnsibleInventory
+      - LimeLight-AnsiBolton_103-AdHocCommands
+      - LimeLight-AnsiBolton_104-FactsAndVars
+      - LimeLight-AnsiBolton_105-TasksInAPlay
+      - LimeLight-AnsiBolton_106-HandlerTasks
+      - LimeLight-AnsiBolton_107-AnatomyOfAPlaybook
+      - LimeLight-AnsiBolton_108-DoMore
+      - LimeLight-AnsiBolton_109-Vault
+      - LimeLight-AnsiBolton_110-Roles
+      - LimeLight-AnsiBolton_111-RoleDistribution
+    when: ll_iamtowerzero == true
+
+  - name: Import ALL Tower Roles
+    include_role:
+      name: "{{ item }}"
+    with_items:
+      - LimeLight-ShutdownTime
+      - LimeLight-TowerConfig
+      - LimeLight-ServerCheckin
+
+#  tasks:
+#  - name: Import TowerZero Roles
+#    include_role:
+#      name: "{{ item }}"
+#    with_items:
+#      - LimeLight-API
 
 ###############################################################################
 ###     CONFIGURE WORKER NODES

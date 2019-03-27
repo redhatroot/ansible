@@ -1,0 +1,34 @@
+---
+- name: Deploy LimeLight Tower instances
+  hosts: towtemp
+  gather_facts: no
+
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+
+  tasks:
+  - name: Debug Demo Inventory
+    uri:
+      url: "https://localhost/api/v2/inventories/"
+      validate_certs: no
+      method: GET
+      user: admin
+      password: gokevgo
+      force_basic_auth: yes
+      status_code: 200
+    register: all_inventory
+
+  - name: Delete ALL Inventory
+    uri:
+      url: "https://localhost/api/v2/inventories/{{ item.id }}/"
+      validate_certs: no
+      method: DELETE
+      user: admin
+      password: gokevgo
+      force_basic_auth: yes
+      status_code: 202
+      ignore_errors: yes
+    with_items: "{{ all_inventory.json.results }}"
+    loop_control:
+      label: "{{ item.id }}"
