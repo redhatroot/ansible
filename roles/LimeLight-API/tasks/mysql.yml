@@ -5,7 +5,6 @@
     state: started
     enabled: yes
 
-
 - name: Copy database dump file
   copy:
     src: templates/LLAPI.sql

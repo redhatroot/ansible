@@ -1,9 +1,18 @@
 ---
-- name: software tasks
-  include_tasks: software.yml
+- name: include towerzero tasks
+  include_tasks:
+    file: software.yml
+    apply:
+      delegate_to: towerzero
 
-- name: MySQL tasks
-  include_tasks: mysql.yml
+- name: include towerzero tasks
+  include_tasks:
+    file: mysql.yml
+    apply:
+      delegate_to: towerzero
 
-- name: httpd tasks
-  include_tasks: httpd.yml
+- name: include towerzero tasks
+  include_tasks:
+    file: httpd.yml
+    apply:
+      delegate_to: towerzero

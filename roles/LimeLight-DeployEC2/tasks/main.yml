@@ -26,11 +26,6 @@
     tzero_ip: "{{ newec2info.tagged_instances[0].public_ip }}"
   when: (item == 0 and ll_application == 'Tower') and (user_terminate is not defined or user_terminate != true)
 
-#- name: "Probe {{ newec2info.tagged_instances[0].public_ip }} for 10 seconds"
-#  wait_for:
-#    timeout: 10
-#  when: (user_terminate is not defined or user_terminate != true) or (newec2info.changed)
-
 - name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group temp inventory"
   add_host:
     name: "{{ ll_ec2srvname }}"
@@ -41,6 +36,9 @@
     ll_userid: "{{ ll_userid }}"
     ll_sequence: "{{ ll_sequence }}"
     ll_hostname: "{{ ll_hostname }}"
+    tower_user: "{{ tower_user }}"
+    tower_pass: "{{ tower_pass }}"
+    tzero_pass: "{{ tzero_pass }}"
     tzero_ip: "{{ tzero_ip }}"
   changed_when: False
   when: user_terminate is not defined or user_terminate != true

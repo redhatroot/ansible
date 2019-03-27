@@ -1,1 +1,7 @@
 ---
+- name: include towerzero tasks
+  include_tasks:
+    file: towerzero.yml
+    apply:
+      delegate_to: towerzero
+

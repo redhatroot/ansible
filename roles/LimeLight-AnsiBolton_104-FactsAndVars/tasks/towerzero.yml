@@ -1,0 +1,5 @@
+---
+- name: Synchronization Deck Content
+  synchronize:
+    src: files/html_slides_content/
+    dest: "{{ limelight_deck_boltonpath }}/104-FactsAndVars/"

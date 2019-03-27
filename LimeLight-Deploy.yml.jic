@@ -62,7 +62,7 @@
 ###     CONFIGURE TOWER ZERO
 
 - name: Configure Tower against towerzero inventory
-  hosts: newtower
+  hosts: towerzero
   become: yes
   vars:
     ansible_ssh_user: centos
@@ -73,13 +73,7 @@
     - role: LimeLight-ShutdownTime
       vars:
         system_shutdown: -c
-    - role: LimeLight-TowerConfig
-      vars:
-        tower_user: "{{ tower_user }}"
-        tower_pass: "{{ tower_pass }}"
-        license_file: "{{ license_file }}"
     - role: LimeLight-API
-    - role: LimeLight-ServerCheckin
     - role: LimeLight-AnsiBolton_000-DeckFramework
     - role: LimeLight-AnsiBolton_010_PeopleLoveAnsible
     - role: LimeLight-AnsiBolton_011_InstallingAnsible
@@ -94,6 +88,25 @@
     - role: LimeLight-AnsiBolton_109-Vault
     - role: LimeLight-AnsiBolton_110-Roles
     - role: LimeLight-AnsiBolton_111-RoleDistribution
+
+
+###############################################################################
+###     CONFIGURE TOWER NODES
+
+- name: Configure Tower against newtower inventory
+  hosts: newtower
+  become: yes
+  vars:
+    ansible_ssh_user: centos
+    ansible_ssh_private_key_file: /root/.ssh/kev-ansible-kev.pem
+    tower_email: root@redhat.com
+
+  roles:
+    - role: LimeLight-TowerConfig
+    - role: LimeLight-ServerCheckin
+    - role: LimeLight-ShutdownTime
+#      vars:
+#        system_shutdown: 90        # 720 = 12 hours, # 1440 min = 1 day, 2160 = 1.5 days, 2880 = 2 days
 
 ###############################################################################
 ###     CONFIGURE WORKER NODES

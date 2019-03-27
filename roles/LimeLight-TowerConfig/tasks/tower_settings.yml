@@ -1,6 +1,15 @@
 ---
-- name: Admin credentials for tower account
-  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{ tower_user }}', '{{ tower_email }}', '{{ tower_pass }}')" | tower-manage shell
+- name: "Admin credentials - admin / {{ tzero_pass }}"
+#  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', '{{ tower_email }}', '{{ tzero_pass }}')" | tower-manage shell
+  raw: "tower-manage update_password --username admin --password {{ tzero_pass }}"
+  failed_when: False
+  ignore_errors: yes
+  no_log: True
+  changed_when: False
+
+- name: "User credentials - {{ tower_user }} / {{ tower_pass }}"
+#  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{ tower_user }}', '{{ tower_email }}', '{{ tower_pass }}')" | tower-manage shell
+  raw: "tower-manage update_password --username {{ tower_user }} --password {{ tower_pass }}"
   failed_when: False
   ignore_errors: yes
   no_log: True
@@ -11,8 +20,8 @@
     url: "https://localhost/api/v2/config/"
     validate_certs: no
     method: POST
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
+    user: admin
+    password: "{{ tzero_pass }}"
     body: "{{ license_file }}"
     body_format: json
     force_basic_auth: yes
