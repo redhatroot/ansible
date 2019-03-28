@@ -72,15 +72,7 @@
     tower_email: root@redhat.com
 
   tasks:
-  - name: ll_iamtowerzero
-    debug:
-      msg: "{{ ll_iamtowerzero }}"
-
-  - name: TowerZero BoltOn Framework
-    include_role:
-      name: LimeLight-AnsiBolton_000-DeckFramework
-
-  - name: TowerZero BoltOn Optional Modules
+  - name: TowerZero BoltOns
     include_role:
       name: "{{ item }}"
     with_items: "{{ ll_towerzero_roles }}"
@@ -92,13 +84,6 @@
       - LimeLight-ShutdownTime
       - LimeLight-TowerConfig
       - LimeLight-ServerCheckin
-
-#  tasks:
-#  - name: Import TowerZero Roles
-#    include_role:
-#      name: "{{ item }}"
-#    with_items:
-#      - LimeLight-API
 
 ###############################################################################
 ###     CONFIGURE WORKER NODES

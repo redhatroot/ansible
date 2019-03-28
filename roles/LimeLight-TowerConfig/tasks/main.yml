@@ -3,10 +3,10 @@
 - include: tower_packages.yml
 - include: remove_defaults.yml
 
-#    - insert/project_RedHatROoT-Ansible-Demos.yml
-#    - insert/credential_MachineRoot.yml
-#    - insert/credential_LabVault.yml
-#    - insert/inventory_LabMachines.yml
-#    - insert/inventory_Script.yml
-#    - insert/jobtemplate_loop.yml
+- include: insert/project_RedHatROoT-Ansible-Demos.yml
+- include: insert/credential_MachineRoot.yml
+- include: insert/credential_LabVault.yml
+- include: insert/inventory_LabMachines.yml
+- include: insert/inventory_Script.yml
+- include: insert/jobtemplate_loop.yml
 

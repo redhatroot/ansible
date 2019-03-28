@@ -1,1 +1,4 @@
 ---
+limelight_deck_basepath: /var/www/html
+limelight_deck_boltonpath: "{{ limelight_deck_basepath }}/deck-ansible/html_slides"
+limelight_deck_boltonlabs: true

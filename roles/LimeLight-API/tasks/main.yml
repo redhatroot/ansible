@@ -2,14 +2,14 @@
 - name: include towerzero tasks
   include_tasks:
     file: software.yml
-  when: ll_iamtowerzero == true
+  when: ll_iamtowerzero
 
 - name: include towerzero tasks
   include_tasks:
     file: mysql.yml
-  when: ll_iamtowerzero == true
+  when: ll_iamtowerzero
 
 - name: include towerzero tasks
   include_tasks:
     file: httpd.yml
-  when: ll_iamtowerzero == true
+  when: ll_iamtowerzero

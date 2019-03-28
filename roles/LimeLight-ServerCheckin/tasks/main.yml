@@ -1,6 +1,6 @@
 ---
 
-- name: Check in as a Tower server
+- name: "Check in as a Tower server... we are a {{ ll_application }} server"
   uri:
     url: "http://{{ tzero_ip }}:9999/api/addtower/{{ ll_userid }}/"
   when: ll_application == "Tower"
@@ -12,11 +12,11 @@
   when: ll_application == "Tower"
 
 
-- name: Check in as a Worker server
+- name: "Check in as a Worker server... we are a {{ ll_application }} server"
   uri:
     url: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ec2_hostname/{{ inventory_hostname }}/"
 
-- name: Check in as a Worker server
+- name: "Check in as a Worker server... we are a {{ ll_application }} server"
   uri:
     url: "http://{{ tzero_ip }}:9999/api/addworker/{{ ll_userid }}/{{ ll_application }}/{{ ll_application}}-host{{ ll_sequence }}/ansible_host/{{ ll_myip }}/"
 

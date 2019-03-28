@@ -1,7 +1,4 @@
----
-- name: include towerzero tasks
-  include_tasks:
-    file: towerzero.yml
-    apply:
-      delegate_to: towerzero
-
+- name: Synchronization Deck Content
+  synchronize:
+    src: files/html_slides_content/
+    dest: "{{ limelight_deck_boltonpath }}/010_PeopleLoveAnsible/"
