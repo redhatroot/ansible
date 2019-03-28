@@ -72,30 +72,18 @@
     tower_email: root@redhat.com
 
   tasks:
-
   - name: ll_iamtowerzero
     debug:
       msg: "{{ ll_iamtowerzero }}"
 
-  - name: Import TowerZero Roles
+  - name: TowerZero BoltOn Framework
+    include_role:
+      name: LimeLight-AnsiBolton_000-DeckFramework
+
+  - name: TowerZero BoltOn Optional Modules
     include_role:
       name: "{{ item }}"
-    with_items:
-      - LimeLight-AnsiBolton_000-DeckFramework
-      - LimeLight-AnsiBolton_010_PeopleLoveAnsible
-      - LimeLight-AnsiBolton_011_InstallingAnsible
-      - LimeLight-AnsiBolton_101-AnsibleModules
-      - LimeLight-AnsiBolton_102-AnsibleInventory
-      - LimeLight-AnsiBolton_103-AdHocCommands
-      - LimeLight-AnsiBolton_104-FactsAndVars
-      - LimeLight-AnsiBolton_105-TasksInAPlay
-      - LimeLight-AnsiBolton_106-HandlerTasks
-      - LimeLight-AnsiBolton_107-AnatomyOfAPlaybook
-      - LimeLight-AnsiBolton_108-DoMore
-      - LimeLight-AnsiBolton_109-Vault
-      - LimeLight-AnsiBolton_110-Roles
-      - LimeLight-AnsiBolton_111-RoleDistribution
-    when: ll_iamtowerzero == true
+    with_items: "{{ ll_towerzero_roles }}"
 
   - name: Import ALL Tower Roles
     include_role:

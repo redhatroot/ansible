@@ -1,6 +1,5 @@
 ---
-- name: include towerzero tasks
+- name: "include towerzero tasks on {{ ansible_hostname }}"
   include_tasks:
     file: towerzero.yml
-    apply:
-      delegate_to: towerzero
+  when: ll_iamtowerzero == true

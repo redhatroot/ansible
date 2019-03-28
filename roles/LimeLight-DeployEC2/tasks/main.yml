@@ -19,7 +19,7 @@
     instance_initiated_shutdown_behavior: terminate
   register: newec2info
   delegate_to: localhost
-#  changed_when: False
+  changed_when: False
 
 - name: "validating tzero_ip var as {{ tzero_ip }}"
   set_fact:
@@ -28,8 +28,7 @@
 
 - name: "add {{ newec2info.tagged_instances[0].public_ip }} host to group temp inventory"
   add_host:
-    name: "{{ ll_ec2srvname }}"
-    ansible_host: "{{ newec2info.tagged_instances[0].public_ip }}"
+    name: "{{ newec2info.tagged_instances[0].public_ip }}"
     groups: "{{ ll_inventory }}"
     ll_myip: "{{ newec2info.tagged_instances[0].public_ip }}"
     ll_application: "{{ ll_application }}"
