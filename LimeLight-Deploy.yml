@@ -14,6 +14,7 @@
     vars:
       ll_application: Tower
       ll_userid: "{{'%03d'|format(item|int) }}"
+
       ll_sequence: ""
       ll_ec2srvname: "{{ user_prefix }}-{{ user_event_short | replace (' ','') }}-{{ ll_application }}{{ ll_userid }}"
       ll_hostname: "{{ user_event_short | replace (' ','') }}-{{ ll_application }}{{ ll_userid }}"
@@ -75,7 +76,8 @@
   - name: TowerZero BoltOns
     include_role:
       name: "{{ item }}"
-    with_items: "{{ ll_towerzero_roles }}"
+    with_items:
+      - LimeLight-AnsiBolton-Deck
 
   - name: Import ALL Tower Roles
     include_role:

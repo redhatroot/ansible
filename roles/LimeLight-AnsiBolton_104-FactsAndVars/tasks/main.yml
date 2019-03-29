@@ -1,5 +1,0 @@
----
-- name: "include towerzero tasks on {{ ansible_hostname }}"
-  include_tasks:
-    file: towerzero.yml
-  when: ll_iamtowerzero
