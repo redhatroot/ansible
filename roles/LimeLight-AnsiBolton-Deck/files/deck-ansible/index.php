@@ -7,6 +7,7 @@ $gihub_stars="33,500+";
 $download_permonth="500,000+";
 
 $dry_run = (isset($_GET['dryrun']) ? 1 : 0);
+$breadcrumbs = (isset($_GET['breadcrumbs']) ? $_GET['breadcrumbs'] : 1);
 
 /* LAB LIMITs
 	0 = No Restrictions		/deck-ansible/
@@ -69,8 +70,50 @@ RUNNING IN DRY RUN with LAB LIMIT SET TO <?=$lab_limit?>
 $html_dir = $mydir . "html_slides";
 $html_topics = explode("\n",shell_exec("find $html_dir -maxdepth 1 -type d  | sort"));
 
-/*	We scan each dir and include each HTML slides from the diretory*/
 
+/*      We scan each dir looking for the breadcrumbs to each intro page     */
+$breadcrumbtitles[] = "INTRO PAGE";
+$breadcrumblinks[] = "";
+foreach( $html_topics as $key => $htmldir){
+        $breadcrumbtarget = $htmldir . "/000__intro.html";
+        if (file_exists($breadcrumbtarget)){
+                $tempbreadcrumbcontent = preg_replace("/\n/","",file_get_contents($breadcrumbtarget));
+
+                $pattern = '/^.*\<h1\>(.*)\<\/h1\>.*$/';
+                $replace = "$1";
+                $breadcrumbtitle = preg_replace($pattern,$replace,$tempbreadcrumbcontent);
+
+                $pattern = '/^.*\<section.*id="(.*)\"\>.*<\/h1\>.*$/';
+                $replace = "$1";
+                $breadcrumblink = preg_replace($pattern,$replace,$tempbreadcrumbcontent);
+
+                $breadcrumbtitles[] = "$breadcrumbtitle";
+                $breadcrumblinks[] = "$breadcrumblink";
+        }
+}
+
+$breadcrumbblock = "";
+foreach( $breadcrumblinks as $key => $breadcrumburl){
+        $breadcrumbtitle = ucwords(strtolower($breadcrumbtitles[$key]));
+        $breadcrumbblock .= "<a style=\"font-size: 10px; color: gray;\" href=\"#$breadcrumburl\">[ $breadcrumbtitle ] </a> &nbsp; ";
+}
+
+if ($dry_run) print_r($breadcrumbtitles);
+if ($dry_run) print_r($breadcrumblinks);
+if ( (!$dry_run) and ($breadcrumbs) ) print $breadcrumbblock;
+
+/*      We scan each dir looking for the breadcrumbs to each intro page     */
+
+/*
+print "\n\n";
+foreach( $html_topics as $key => $htmldir){
+        $breadcrumbtarget = $htmldir . "/000__intro.html";
+        if (file_exists($breadcrumbtarget)) print "$html_dir $breadcrumbtarget\n";
+}
+*/
+
+
+/*	We scan each dir and include each HTML slides from the diretory*/
 foreach( $html_topics as $key => $htmldir){
 	$pretty_htmldir = preg_replace("/^.*\/html_slides/","",$htmldir);
 	$pretty_htmldir = preg_replace("/^.*\//","",$pretty_htmldir);

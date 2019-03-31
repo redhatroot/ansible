@@ -30,13 +30,3 @@
 - name: Apply new SELinux file context to filesystem
   command: "restorecon -irv {{ limelight_deck_basepath }}"
 
-### The redirect will go in the {{ limelight_deck_basepath }} path and redirect to the PHP deck dir with tag:  phpredirect
-- name: Copy index.php to root dir
-  template:
-    src: templates/index_redirect.php
-    dest: "{{ limelight_deck_basepath }}/index.php"
-    owner: root
-    group: wheel
-    mode: 0644
-  tags: [ 'never', 'phpredirect' ]
-

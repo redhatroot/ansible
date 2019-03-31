@@ -8,20 +8,23 @@ $elements = explode('/',preg_replace("/^\/api\//","",$_SERVER['REQUEST_URI']));
 
 switch ($elements[0]) {
 	case "addtower":
-		$content = add_tower($myip,$elements[1]);
+		$content = add_tower($myip,addslashes($elements[1]));
 		break;
 	case "addworker":
 		$content = add_worker(
 			$myip,
-			$elements[1] = isset($elements[1]) ? $elements[1] : '',
-			$elements[2] = isset($elements[2]) ? $elements[2] : '',
-			$elements[3] = isset($elements[3]) ? $elements[3] : '',
-			$elements[4] = isset($elements[4]) ? $elements[4] : '',
-			$elements[5] = isset($elements[5]) ? $elements[5] : ''
+			$elements[1] = isset($elements[1]) ? addslashes($elements[1]) : '',
+			$elements[2] = isset($elements[2]) ? addslashes($elements[2]) : '',
+			$elements[3] = isset($elements[3]) ? addslashes($elements[3]) : '',
+			$elements[4] = isset($elements[4]) ? addslashes($elements[4]) : '',
+			$elements[5] = isset($elements[5]) ? addslashes($elements[5]) : ''
 		);
 		break;
 	case "myinventory":
-		$content = my_inv($myip);
+		$content = my_inv($myip,"json");
+		break;
+	case "myinvini":
+		$content = my_inv($myip,"ini");
 		break;
 	default:
 		$content = my_instructions($_SERVER['HTTP_HOST']);
@@ -127,7 +130,7 @@ ALLDONE;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function my_inv($ip){
+function my_inv($ip,$format){
 	global $db;
 	$inv = array();
 
@@ -141,11 +144,18 @@ function my_inv($ip){
 
 	list($myuid) = mysql_fetch_array($query);
 
-	if ($myuid == 0){
-		return admin_inv($myuid);
+	if ( isset($myuid)){
+		if ($format == "ini"){
+			return user_invini($myuid);
+		}elseif ($myuid == 0){
+			return admin_inv($myuid);
+		}else{
+			return user_inv($myuid);
+		}
 	}else{
-		return user_inv($myuid);
+		print "ACCESS DENIED\n";
 	}
+
 }
 
 function admin_inv($myuid){
@@ -161,6 +171,9 @@ function admin_inv($myuid){
 	", $db);
 
 	while(list($grp,$var,$val,$userid) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$var = strtolower($var);
+
 		$grp = "user" . $userid . "_" . $grp;
 		$inv[$grp]['vars'][$var] = $val;
 	}
@@ -175,10 +188,13 @@ function admin_inv($myuid){
 	", $db);
 
 	while(list($grp,$host,$userid) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+
 		$host = "user" . $userid . "_" . $host;
 		$grp = "user" . $userid . "_" . $grp;
-		$inv['user-' . $userid]['hosts'][] = $host;
-		$inv[$grp]['hosts'][] = $host;
+		$inv['user-' . $userid]['hosts'][] = strtolower($host);
+		$inv[$grp]['hosts'][] = strtolower($host);
 	}
 
 	// WE GET ALL THE HOST VARS
@@ -192,6 +208,9 @@ function admin_inv($myuid){
 	", $db);
 
 	while(list($host,$var, $val,$userid) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+
 		$host = "user" . $userid . "_" . $host;
 		$inv['_meta']['hostvars'][$host][$var] = $val;
 	}
@@ -216,6 +235,7 @@ function user_inv($myuid){
 	", $db);
 
 	while(list($grp,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
 		$inv[$grp]['vars'][$var] = $val;
 	}
 
@@ -230,6 +250,8 @@ function user_inv($myuid){
 	", $db);
 
 	while(list($grp,$host) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
 		$inv[$grp]['hosts'][] = $host;
 	}
 
@@ -242,6 +264,7 @@ function user_inv($myuid){
 	", $db);
 
 	while(list($host,$var, $val) = mysql_fetch_array($query)){
+		$host = strtolower($host);
 		$inv['_meta']['hostvars'][$host][$var] = $val;
 	}
 
@@ -252,3 +275,80 @@ function user_inv($myuid){
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+
+function user_invini($myuid){
+	global $db;
+	$inv = array();
+	$out = "## Text Based Inventory For User $myuid\n";
+
+	// WE GET THE GROUP VARS
+	$query = mysql_query("
+		SELECT `mygroup`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` = ''
+		AND `userid` = '$myuid'
+	", $db);
+
+	while(list($grp,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$invgrpvar['groupvars'][$grp][$var] = $val;
+	}
+
+	// WE GET ALL THE HOSTS
+	$query = mysql_query("
+		SELECT `mygroup`,`myhost`
+		FROM `all_host_requests`
+		WHERE `myhost` <> ''
+		AND `userid` = '$myuid'
+		GROUP BY `mygroup`,`myhost`
+		ORDER by `myhost`
+	", $db);
+
+	while(list($grp,$host) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+//		$inv['hosts'][$host][$var] = "$val";
+	}
+
+	// WE GET ALL THE HOST VARS
+	$query = mysql_query("
+		SELECT `mygroup`,`myhost`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` <> ''
+		AND `userid` = '$myuid'
+	", $db);
+
+	while(list($grp,$host,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+		$invhosts[$grp][$host][$var] = $val;
+	}
+
+
+	foreach($invgrpvar['groupvars'] as $key => $value){
+		$groupname = (strlen($key) > 0) ? $key : 'all';
+		$out .= "\n[$groupname:vars]\n";
+		foreach($invgrpvar['groupvars'][$key] as $akey => $avalue){
+			$out .= "$akey=\"$avalue\"\n";
+		}
+		$out .= "\n";
+	}
+	foreach($invhosts as $key => $value){
+		$groupname = (strlen($key) > 0) ? $key : 'all';
+		$out .= "\n[$groupname]";
+		foreach($invhosts[$key] as $akey => $avalue){
+			$out .= "\n$akey ";
+			foreach($invhosts[$key][$akey] as $bkey => $bvalue){
+				$out .= "$bkey=\"$bvalue\" ";
+			}
+		}
+		$out .= "\n";
+	}
+
+//	print_r($invhosts);
+	print "$out\n";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+

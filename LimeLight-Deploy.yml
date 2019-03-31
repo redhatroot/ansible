@@ -43,8 +43,8 @@
       public: yes
     vars:
       ll_application: Web
-      ll_userid: "{{'%03d'|format(item.0|int) }}"
-      ll_sequence: "{{ item.1 }}"
+      ll_userid: "{{'%03d'|format(workerct.0|int) }}"
+      ll_sequence: "{{ workerct.1 }}"
       ll_ec2srvname: "{{ user_prefix }}-{{ user_event_short | replace (' ','') }}-{{ ll_application }}{{ ll_userid }}{{ ll_sequence }}"
       ll_hostname: "{{ user_event_short | replace (' ','') }}-{{ ll_application }}{{ ll_userid }}{{ ll_sequence }}"
       ll_image_size: "{{ worker_instype }}"
@@ -60,6 +60,8 @@
     with_nested:
       - "{{ range( 0 | int, (user_count+1 | int)) | list }}"
       - "{{ ll_web_seq }}"
+    loop_control:
+      loop_var: workerct
 
 ###############################################################################
 ###     CONFIGURE TOWER STUFF
@@ -73,19 +75,17 @@
     tower_email: root@redhat.com
 
   tasks:
-  - name: TowerZero BoltOns
+  - name: Import Tower Roles
     include_role:
-      name: "{{ item }}"
+      name: "{{ towerpkg }}"
     with_items:
+      - LimeLight-API
       - LimeLight-AnsiBolton-Deck
-
-  - name: Import ALL Tower Roles
-    include_role:
-      name: "{{ item }}"
-    with_items:
       - LimeLight-ShutdownTime
       - LimeLight-TowerConfig
       - LimeLight-ServerCheckin
+    loop_control:
+      loop_var: towerpkg
 
 ###############################################################################
 ###     CONFIGURE WORKER NODES

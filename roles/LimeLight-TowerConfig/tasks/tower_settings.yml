@@ -30,7 +30,7 @@
     method: POST
     user: "{{ tzero_user }}"
     password: "{{ tzero_pass }}"
-    body: "{{ license_file }}"
+    body: "{% if ll_iamtowerzero %}{{ zero_license_file }}{% else %}{{ user_license_file }}{% endif %}"
     body_format: json
     force_basic_auth: yes
   changed_when: False
