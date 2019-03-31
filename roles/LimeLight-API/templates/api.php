@@ -145,17 +145,21 @@ function my_inv($ip,$format){
 	list($myuid) = mysql_fetch_array($query);
 
 	if ( isset($myuid)){
-		if ($format == "ini"){
-			return user_invini($myuid);
-		}elseif ($myuid == 0){
-			return admin_inv($myuid);
+		if ($myuid == 0){
+			if ($format == "ini"){
+				return admin_invini($myuid);
+			}else{
+				return admin_inv($myuid);
+			}
 		}else{
-			return user_inv($myuid);
+			if ($format == "ini"){
+				return user_invini($myuid);
+			}else{
+				return user_inv($myuid);
+			}
 		}
-	}else{
-		print "ACCESS DENIED\n";
 	}
-
+	return "ACCESS DENIED";
 }
 
 function admin_inv($myuid){
@@ -210,7 +214,6 @@ function admin_inv($myuid){
 	while(list($host,$var, $val,$userid) = mysql_fetch_array($query)){
 		$grp = strtolower($grp);
 		$host = strtolower($host);
-
 		$host = "user" . $userid . "_" . $host;
 		$inv['_meta']['hostvars'][$host][$var] = $val;
 	}
@@ -279,8 +282,9 @@ function user_inv($myuid){
 
 function user_invini($myuid){
 	global $db;
-	$inv = array();
-	$out = "## Text Based Inventory For User $myuid\n";
+	$invgrpvar = array();
+	$invhosts = array();
+	$out = "## Ansible INI style inventory for user $myuid\n";
 
 	// WE GET THE GROUP VARS
 	$query = mysql_query("
@@ -295,58 +299,144 @@ function user_invini($myuid){
 		$invgrpvar['groupvars'][$grp][$var] = $val;
 	}
 
-	// WE GET ALL THE HOSTS
-	$query = mysql_query("
-		SELECT `mygroup`,`myhost`
-		FROM `all_host_requests`
-		WHERE `myhost` <> ''
-		AND `userid` = '$myuid'
-		GROUP BY `mygroup`,`myhost`
-		ORDER by `myhost`
-	", $db);
-
-	while(list($grp,$host) = mysql_fetch_array($query)){
-		$grp = strtolower($grp);
-		$host = strtolower($host);
-//		$inv['hosts'][$host][$var] = "$val";
-	}
-
 	// WE GET ALL THE HOST VARS
 	$query = mysql_query("
-		SELECT `mygroup`,`myhost`,`myvar`,`myval`
+		SELECT `userid`,`mygroup`,`myhost`,`myvar`,`myval`
 		FROM `all_host_requests`
 		WHERE `myhost` <> ''
 		AND `userid` = '$myuid'
 	", $db);
 
-	while(list($grp,$host,$var, $val) = mysql_fetch_array($query)){
+	while(list($uid,$grp,$host,$var, $val) = mysql_fetch_array($query)){
 		$grp = strtolower($grp);
 		$host = strtolower($host);
 		$invhosts[$grp][$host][$var] = $val;
 	}
 
+	// WE GET ALL THE HOST VARS
+	$query = mysql_query("
+		SELECT `userid`,`mygroup`,`myhost`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` <> ''
+		AND `userid` = '$myuid'
+	", $db);
 
-	foreach($invgrpvar['groupvars'] as $key => $value){
-		$groupname = (strlen($key) > 0) ? $key : 'all';
-		$out .= "\n[$groupname:vars]\n";
-		foreach($invgrpvar['groupvars'][$key] as $akey => $avalue){
-			$out .= "$akey=\"$avalue\"\n";
-		}
-		$out .= "\n";
+	while(list($uid,$grp,$host,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+		$invhosts['user'.$uid][$host][$var] = $val;
 	}
-	foreach($invhosts as $key => $value){
-		$groupname = (strlen($key) > 0) ? $key : 'all';
-		$out .= "\n[$groupname]";
-		foreach($invhosts[$key] as $akey => $avalue){
-			$out .= "\n$akey ";
-			foreach($invhosts[$key][$akey] as $bkey => $bvalue){
-				$out .= "$bkey=\"$bvalue\" ";
+
+
+	if(count($invgrpvar) > 0){
+		foreach($invgrpvar['groupvars'] as $key => $value){
+			$groupname = (strlen($key) > 0) ? $key : 'all';
+			$out .= "\n[$groupname:vars]\n";
+			foreach($invgrpvar['groupvars'][$key] as $akey => $avalue){
+				$out .= "$akey=\"$avalue\"\n";
 			}
+			$out .= "\n";
 		}
-		$out .= "\n";
 	}
 
-//	print_r($invhosts);
+	if(count($invhosts) > 0){
+		foreach($invhosts as $key => $value){
+			$groupname = (strlen($key) > 0) ? $key : 'all';
+			$out .= "\n[$groupname]";
+			foreach($invhosts[$key] as $akey => $avalue){
+				$out .= "\n$akey ";
+				foreach($invhosts[$key][$akey] as $bkey => $bvalue){
+					if (preg_match("/\s+/",$bvalue)){
+						$out .= "$bkey=\"$bvalue\" ";
+					}else{
+						$out .= "$bkey=$bvalue ";
+					}
+				}
+			}
+			$out .= "\n";
+		}
+	}
+	print "$out\n";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+function admin_invini($myuid){
+	global $db;
+	$invgrpvar = array();
+	$invhosts = array();
+	$out = "## Ansible INI style inventory for ADMIN USER\n";
+
+	// WE GET THE GROUP VARS
+	$query = mysql_query("
+		SELECT `mygroup`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` = ''
+	", $db);
+
+	while(list($grp,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$invgrpvar['groupvars'][$grp][$var] = $val;
+	}
+
+	// WE GET ALL THE HOST VARS
+	$query = mysql_query("
+		SELECT `userid`,`mygroup`,`myhost`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` <> ''
+		AND `userid` = '$myuid'
+		ORDER by `mygroup`,`userid`
+	", $db);
+
+	while(list($uid,$grp,$host,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+		$invhosts[$grp][$host][$var] = $val;
+	}
+
+	// WE GET ALL THE HOST VARS FOR EVERY USER
+	$query = mysql_query("
+		SELECT `userid`,`mygroup`,`myhost`,`myvar`,`myval`
+		FROM `all_host_requests`
+		WHERE `myhost` <> ''
+		ORDER by `mygroup`,`userid`
+	", $db);
+
+	while(list($uid,$grp,$host,$var, $val) = mysql_fetch_array($query)){
+		$grp = strtolower($grp);
+		$host = strtolower($host);
+		$invhosts['user'.$uid][$host][$var] = $val;
+	}
+
+	if(count($invgrpvar) > 0){
+		foreach($invgrpvar['groupvars'] as $key => $value){
+			$groupname = (strlen($key) > 0) ? $key : 'all';
+			$out .= "\n[$groupname:vars]\n";
+			foreach($invgrpvar['groupvars'][$key] as $akey => $avalue){
+				$out .= "$akey=\"$avalue\"\n";
+			}
+			$out .= "\n";
+		}
+	}
+
+	if(count($invhosts) > 0){
+		foreach($invhosts as $key => $value){
+			$groupname = (strlen($key) > 0) ? $key : 'all';
+			$out .= "\n[$groupname]";
+			foreach($invhosts[$key] as $akey => $avalue){
+				$out .= "\n$akey ";
+				foreach($invhosts[$key][$akey] as $bkey => $bvalue){
+					if (preg_match("/\s+/",$bvalue)){
+						$out .= "$bkey=\"$bvalue\" ";
+					}else{
+						$out .= "$bkey=$bvalue ";
+					}
+				}
+			}
+			$out .= "\n";
+		}
+	}
 	print "$out\n";
 }
 
