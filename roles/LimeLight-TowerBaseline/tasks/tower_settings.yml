@@ -1,6 +1,5 @@
 ---
 - name: "Admin credentials - {{ tzero_user }} / {{ tzero_pass }}"
-#  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', '{{ tower_email }}', '{{ tzero_pass }}')" | tower-manage shell
   raw: "tower-manage update_password --username {{ tzero_user }} --password {{ tzero_pass }}"
   failed_when: False
   ignore_errors: yes
@@ -8,7 +7,6 @@
   changed_when: False
 
 - name: "Create Superuser {{ tower_user }}"
-#  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{ tower_user }}', '{{ tower_email }}', '{{ tower_pass }}')" | tower-manage shell
   raw: "tower-manage createsuperuser --username {{ tower_user }} --email root@redhat.com --noinput"
   failed_when: False
   ignore_errors: yes
@@ -16,7 +14,6 @@
   changed_when: False
 
 - name: "User credentials - {{ tower_user }} / {{ tower_pass }}"
-#  raw: echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{ tower_user }}', '{{ tower_email }}', '{{ tower_pass }}')" | tower-manage shell
   raw: "tower-manage update_password --username {{ tower_user }} --password {{ tower_pass }}"
   failed_when: False
   ignore_errors: yes
@@ -34,3 +31,12 @@
     body_format: json
     force_basic_auth: yes
   changed_when: False
+
+- name: tower_cli.cfg file
+  template:
+    src: templates/tower_cli.cfg
+    dest: /root/.tower_cli.cfg
+    owner: root
+    group: root
+    mode: '0600'
+

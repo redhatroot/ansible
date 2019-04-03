@@ -1,0 +1,31 @@
+---
+- name: "Include TowerZero tasks on {{ ansible_hostname }}"
+  include_tasks:
+    file: towerzero.yml
+  when: ll_iamtowerzero
+
+- name: "Insert the credentials and sources we will need"
+  include_tasks: "{{ item }}"
+  with_items:
+    - insert/credential_LabVault.yml
+    - insert/credential_MachineRoot.yml
+    - insert/inventory_LabMachines.yml
+    - insert/inventory_Script.yml
+    - insert/project_LimeLightTasks.yml
+#    - file: insert/project_RedHatROoT-Ansible-Demos.yml
+
+- name: debug the IDs to show that we are getting the necessary stuff to start pushing in content
+  debug:
+    var: "{{ item }}"
+  with_items:
+  - new_vault_credential_id
+  - new_machine_credential_id
+  - new_inventoryscript_id
+  - new_inventorysource_id
+  - new_inventory_id
+  - new_ll_project_id
+
+- name: Insert the job templates we will need
+  include_tasks: "{{ item }}"
+  with_items:
+    - insert/jobtemplate_01-Variables.yml

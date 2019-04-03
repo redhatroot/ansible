@@ -73,5 +73,5 @@
   until:  project_insert.json.results[0].status == "successful"
 
 - set_fact:
-    new_project_id: "{{ project_insert.json.results[0].id }}"
+    new_ll_project_id: "{{ project_insert.json.results[0].id }}"
 

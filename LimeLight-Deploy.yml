@@ -79,11 +79,11 @@
     include_role:
       name: "{{ towerpkg }}"
     with_items:
+      - LimeLight-TowerBaseline
       - LimeLight-API
-      - LimeLight-AnsiBolton-Deck
-      - LimeLight-ShutdownTime
-      - LimeLight-TowerConfig
+      - LimeLight-TowerContent
       - LimeLight-ServerCheckin
+#      - LimeLight-ShutdownTime
     loop_control:
       loop_var: towerpkg
 
