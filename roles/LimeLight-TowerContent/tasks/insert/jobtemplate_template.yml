@@ -3,8 +3,8 @@
     url: https://localhost/api/v2/job_templates/
     validate_certs: no
     method: POST
-    user: "{{ tower_user }}"
-    password: "{{ tower_pass }}"
+    user: "{{ tzero_user }}"
+    password: "{{ tzero_pass }}"
     body_format: json
     force_basic_auth: yes
     status_code: 201

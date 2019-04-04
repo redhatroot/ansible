@@ -26,6 +26,6 @@
     - my_jt_name: "02 Variables"
       my_jt_description: "Lab one excercise showing how we can use variables to modify the behavior of our playbook"
       my_playbook_yml: "01-Variables/variables.yml"
-      my_extra_vars: '---\nmy_message: This new message is also set inside the Ansible Towerdddd JT'
+      my_extra_vars: '---\nmy_message: This new message is also set inside the Ansible Tower JT'
 
 
